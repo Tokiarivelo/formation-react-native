@@ -1,35 +1,4 @@
-# Formation Front React N### 2. **Gestion### 4. **Offline et persistance (Optimisé)\*\*
-
-- **WatermelonD### **Jour 5–6 : Wat### **Jour 7–8 : Upload & fichiers natifs**
-
-- ✅ Sélection d'images depuis galerie/caméra.
-- ✅ Preview avec compression optimisée.
-- ✅ Upload multipart via React Query mutation.
-- ✅ Persistence locale dans WatermelonDB + ### **Zustand + React Query Sync**
-
-- `authStore.ts` : État auth léger avec persistence SecureStore
-- `syncManager.ts` : Orchestrateur intelligent WatermelonDB ↔ Server
-- `conflictResolver.ts` : Résolution automatique avec règles business
-- Détection réseau automatique avec retry intelligentintelligent.
-
-**Techno clé :** react-native-image-picker + React Query + WatermelonDB.
-**Pourquoi :** Upload optimisé avec cache local et synchronisation robuste. & Performance Sync\*\*
-
-- ✅ WatermelonDB setup avec modèles (User, Project, Task).
-- ✅ Zustand store léger pour UI state.
-- ✅ React Query offline mutations avec delta sync.
-- ✅ Test performance + mode offline → online sync.
-
-**Techno clé :** WatermelonDB + React Query + Zustand.
-**Pourquoi :** Performance native, requêtes SQL complexes, synchronisation intelligente.ite avec observables, requêtes complexes, performance 10x supérieure
-
-- **React Query Offline** : Mutations automatiques avec retry et conflict resolution
-- **Delta Sync** : Synchronisation intelligente avec timestamps
-- Justification : Performance native, expérience fluide, scalabilité pour gros datasetsat et API (Stack Performance)\*\*
-
-- **Zustand + Immer** : State management ultra-léger (3x plus petit que Redux)
-- **React Query v5** : Cache intelligent, synchronisation automatique, offline mutations
-- **WatermelonDB** : Base SQLite performante avec observables et lazy loading
+# Formation Front React Native
 
 ## 🎯 Objectif global
 
@@ -51,26 +20,20 @@ Durée : **2 semaines (10 jours ouvrés)**.
 
 ### 1. **Langage et framework**
 
-- **React Native CLI** — permet un contrôle total sur les dépendances et la configuration native.
+- **React Native expo** — Framework recommandé.
 - **TypeScript** — typage strict pour une meilleure maintenabilité et autocomplétion.
 
 ### 2. **Gestion d’état et API**
 
-- **Redux Toolkit (RTK)** + **RTK Query** :
-  - RTK structure les reducers et actions de façon standardisée.
-  - RTK Query simplifie les appels API, la gestion du cache et la synchronisation offline.
+- **Zustand** + **React Query** :
+  - Zustand offre une gestion d'état simple et performante avec moins de boilerplate.
+- React Query gère les appels API, le cache, la synchronisation et les états de chargement automatiquement.
 
 ### 3. **Réseau et sécurité**
 
 - **Axios** : client HTTP fiable avec intercepteurs.
 - **SecureStore (expo-secure-store)** ou **react-native-keychain** : stockage sécurisé des tokens.
 - **.env** : gestion des variables d’environnement (API_URL, JWT_KEY).
-
-### 4. **Offline et persistance**
-
-- **AsyncStorage** : pour la persistance locale (cache + mode offline).
-- **Middleware custom “outbox”** : file d’attente locale pour rejouer les requêtes quand la connexion revient.
-- Justification : permet d’assurer une expérience fluide même sans réseau.
 
 ### 5. **Upload et fichiers natifs**
 
@@ -99,7 +62,7 @@ Durée : **2 semaines (10 jours ouvrés)**.
 
 ## 📦 Livrables intermédiaires & critères de validation
 
-### **Jour 1–2 : Scaffold & navigation**
+### **Scaffold & navigation**
 
 - ✅ Repo initial TypeScript configuré.
 - ✅ Navigation Stack + Tabs fonctionnelle.
@@ -110,7 +73,7 @@ Durée : **2 semaines (10 jours ouvrés)**.
 
 ---
 
-### **Jour 3–4 : Authentification (JWT + refresh)**
+### **Authentification (JWT + refresh)**
 
 - ✅ LoginScreen et SignUpScreen.
 - ✅ Appel API NestJS (`/auth/login`, `/auth/refresh`) via React Query.
@@ -122,12 +85,12 @@ Durée : **2 semaines (10 jours ouvrés)**.
 
 ---
 
-### **Jour 5–6 : Gestion d’état & Offline Sync**
+### ** Gestion d’état & Offline Sync**
 
-- ✅ RTK store avec slices pour user, project, task.
-- ✅ Persistance locale avec AsyncStorage.
-- ✅ Middleware outbox pour les mutations offline.
-- ✅ Test du mode offline → online sync.
+- ✅ WatermelonDB setup avec modèles (User, Project, Task).
+- ✅ Zustand store léger pour UI state.
+- ✅ React Query offline mutations avec delta sync.
+- ✅ Test performance + mode offline → online sync.
 
 **Techno clé :** Redux Toolkit + AsyncStorage.
 **Pourquoi :** architecture prédictive et performante pour les apps offline-first.
@@ -146,14 +109,15 @@ Durée : **2 semaines (10 jours ouvrés)**.
 
 ---
 
-### **Jour 9 : Tests & CI**
+### **Tests & CI**
 
-- ✅ Tests unitaires sur reducers & hooks.
-- ✅ Snapshot tests UI.
+- ✅ Tests unitaires sur hooks & stores Zustand.
+- ✅ Tests WatermelonDB avec base test.
+- ✅ Snapshot tests UI avec observables.
 - ✅ GitHub Actions workflow pour lint + test.
 
-**Techno clé :** Jest + GitHub Actions.
-**Pourquoi :** garantir la fiabilité du code et automatiser la qualité.
+**Techno clé :** Jest + Testing Library + GitHub Actions.
+**Pourquoi :** garantir la fiabilité du code et tester la performance.
 
 ---
 
@@ -850,32 +814,9 @@ Cette architecture montre la **puissance de la stack performance** :
 
 ### **tests/**
 
-- Tests unitaires : **Jest** (reducers, hooks, services).
-- Tests E2E légers : validation du flux offline → online (ex. replay de l'outbox).
-
-- `authStore.ts` : État auth léger avec persistence SecureStore
-- `syncManager.ts` : Orchestrateur intelligent WatermelonDB ↔ Server
-- `conflictResolver.ts` : Résolution automatique avec règles business
-- Détection réseau automatique avec retry intelligentintelligent.
-
-**Techno clé :** react-native-image-picker + React Query + WatermelonDB.
-**Pourquoi :** Upload optimisé avec cache local et synchronisation robuste. & Performance Sync\*\*
-
-- ✅ WatermelonDB setup avec modèles (User, Project, Task).
-- ✅ Zustand store léger pour UI state.
-- ✅ React Query offline mutations avec delta sync.
-- ✅ Test performance + mode offline → online sync.
-
-**Techno clé :** WatermelonDB + React Query + Zustand.
-**Pourquoi :** Performance native, requêtes SQL complexes, synchronisation intelligente.ite avec observables, requêtes complexes, performance 10x supérieure
-
-- **React Query Offline** : Mutations automatiques avec retry et conflict resolution
-- **Delta Sync** : Synchronisation intelligente avec timestamps
-- Justification : Performance native, expérience fluide, scalabilité pour gros datasetsat et API (Stack Performance)\*\*
-
-- **Zustand + Immer** : State management ultra-léger (3x plus petit que Redux)
-- **React Query v5** : Cache intelligent, synchronisation automatique, offline mutations
-- **WatermelonDB** : Base SQLite performante avec observables et lazy loading
+- Tests unitaires : **Jest** (stores Zustand, hooks React Query, modèles WatermelonDB).
+- Tests E2E : validation du flux offline → online avec delta sync.
+- Tests performance : benchmarks WatermelonDB vs AsyncStorage.
 
 ---
 
