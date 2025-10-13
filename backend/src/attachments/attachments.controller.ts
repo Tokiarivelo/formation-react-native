@@ -13,10 +13,20 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiConsumes, ApiBody } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiConsumes,
+  ApiBody,
+} from '@nestjs/swagger';
 import type { Response } from 'express';
 import { AttachmentsService } from './attachments.service';
-import { UploadAttachmentDto } from './dto/upload-attachment.dto';
+import {
+  UploadAttachmentDto,
+  FileUploadSchema,
+} from './dto/upload-attachment.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { multerConfig } from './multer.config';
@@ -34,7 +44,7 @@ export class AttachmentsController {
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     description: 'File upload',
-    type: UploadAttachmentDto,
+    type: FileUploadSchema,
     required: true,
   })
   @ApiResponse({ status: 201, description: 'File uploaded successfully' })
@@ -58,7 +68,10 @@ export class AttachmentsController {
 
   @Get()
   @ApiOperation({ summary: 'Get all user attachments' })
-  @ApiResponse({ status: 200, description: 'Attachments retrieved successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Attachments retrieved successfully',
+  })
   async findAll(
     @CurrentUser() user: any,
     @Query('projectId') projectId?: string,
@@ -69,7 +82,10 @@ export class AttachmentsController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get attachment by ID' })
-  @ApiResponse({ status: 200, description: 'Attachment retrieved successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Attachment retrieved successfully',
+  })
   @ApiResponse({ status: 404, description: 'Attachment not found' })
   @ApiResponse({ status: 403, description: 'Access denied' })
   async findById(@Param('id') id: string, @CurrentUser() user: any) {
@@ -88,8 +104,11 @@ export class AttachmentsController {
   ) {
     const attachment = await this.attachmentsService.findById(id, user.id);
     const filePath = await this.attachmentsService.getFilePath(id, user.id);
-    
-    res.setHeader('Content-Disposition', `attachment; filename="${attachment.originalName}"`);
+
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="${attachment.originalName}"`,
+    );
     res.setHeader('Content-Type', attachment.mimeType);
     res.sendFile(filePath, { root: '.' });
   }

@@ -43,29 +43,35 @@ A comprehensive backend API built with NestJS v11, SQLite, Prisma, JWT authentic
 
 1. Clone the repository
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Setup environment variables:
+
 ```bash
 cp .env.example .env
 # Edit .env with your configuration
 ```
 
 4. Generate Prisma client and setup database:
+
 ```bash
 npm run db:generate
 npm run db:push
+npm run db:migrate
 npm run db:seed
 ```
 
 5. Start the development server:
+
 ```bash
 npm run start:dev
 ```
 
 The API will be available at:
+
 - **API**: http://localhost:3000
 - **Swagger Documentation**: http://localhost:3000/api/docs
 
@@ -89,12 +95,14 @@ See `.env.example` for all required environment variables:
 ## API Endpoints
 
 ### Authentication
+
 - `POST /auth/register` - Register new user
 - `POST /auth/login` - User login
 - `POST /auth/refresh` - Refresh access token
 - `POST /auth/logout` - Logout user
 
 ### Users
+
 - `GET /users` - Get all users
 - `GET /users/me` - Get current user profile
 - `GET /users/:id` - Get user by ID
@@ -103,6 +111,7 @@ See `.env.example` for all required environment variables:
 - `DELETE /users/:id` - Delete user by ID
 
 ### Projects
+
 - `POST /projects` - Create new project
 - `GET /projects` - Get user's projects
 - `GET /projects/:id` - Get project by ID
@@ -110,6 +119,7 @@ See `.env.example` for all required environment variables:
 - `DELETE /projects/:id` - Delete project
 
 ### Tasks
+
 - `POST /tasks` - Create new task
 - `GET /tasks` - Get user's tasks (optional: ?projectId=xxx)
 - `GET /tasks/:id` - Get task by ID
@@ -117,6 +127,7 @@ See `.env.example` for all required environment variables:
 - `DELETE /tasks/:id` - Delete task
 
 ### Attachments
+
 - `POST /attachments/upload` - Upload file
 - `GET /attachments` - Get user's attachments
 - `GET /attachments/:id` - Get attachment details
@@ -185,6 +196,7 @@ docker run -p 3000:3000 \
 ## File Upload
 
 The API supports file uploads with the following constraints:
+
 - **Maximum file size**: 5MB (configurable)
 - **Allowed types**: Images (JPEG, PNG, GIF, WebP), Documents (PDF, DOC, DOCX, XLS, XLSX), Text files, ZIP archives
 - **Storage**: Local filesystem in `/uploads` directory
@@ -203,12 +215,14 @@ The API supports file uploads with the following constraints:
 ## Testing
 
 The project includes comprehensive tests:
+
 - **Unit Tests**: Service and controller testing
 - **E2E Tests**: Full application flow testing
 - **Mocking**: Database and external dependencies mocked
 - **Coverage**: Test coverage reporting available
 
 Run tests:
+
 ```bash
 npm run test        # Unit tests
 npm run test:e2e    # E2E tests
@@ -218,6 +232,7 @@ npm run test:cov    # With coverage
 ## Architecture
 
 The application follows NestJS best practices:
+
 - **Modular Architecture**: Feature-based modules
 - **Dependency Injection**: IoC container for dependencies
 - **Guards**: Authentication and authorization

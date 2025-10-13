@@ -1,5 +1,19 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto, UpdateProjectDto } from './dto/project.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -15,7 +29,10 @@ export class ProjectsController {
   @Post()
   @ApiOperation({ summary: 'Create a new project' })
   @ApiResponse({ status: 201, description: 'Project created successfully' })
-  async create(@CurrentUser() user: any, @Body() createProjectDto: CreateProjectDto) {
+  async create(
+    @CurrentUser() user: any,
+    @Body() createProjectDto: CreateProjectDto,
+  ) {
     return this.projectsService.create(user.id, createProjectDto);
   }
 
@@ -40,7 +57,11 @@ export class ProjectsController {
   @ApiResponse({ status: 200, description: 'Project updated successfully' })
   @ApiResponse({ status: 404, description: 'Project not found' })
   @ApiResponse({ status: 403, description: 'Access denied' })
-  async update(@Param('id') id: string, @CurrentUser() user: any, @Body() updateProjectDto: UpdateProjectDto) {
+  async update(
+    @Param('id') id: string,
+    @CurrentUser() user: any,
+    @Body() updateProjectDto: UpdateProjectDto,
+  ) {
     return this.projectsService.update(id, user.id, updateProjectDto);
   }
 

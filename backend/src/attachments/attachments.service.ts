@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
@@ -55,18 +59,22 @@ export class AttachmentsService {
             email: true,
           },
         },
-        project: projectId ? {
-          select: {
-            id: true,
-            name: true,
-          },
-        } : false,
-        task: taskId ? {
-          select: {
-            id: true,
-            title: true,
-          },
-        } : false,
+        project: projectId
+          ? {
+              select: {
+                id: true,
+                name: true,
+              },
+            }
+          : false,
+        task: taskId
+          ? {
+              select: {
+                id: true,
+                title: true,
+              },
+            }
+          : false,
       },
     });
   }
