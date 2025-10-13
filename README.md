@@ -1,6 +1,6 @@
 # Front React Native
 
-## 🧩 Auth & Navigation (Dev A)
+## 🧩 Auth & Navigation
 
 ### Issue 1 — Auth/Login & Secure Storage
 
@@ -32,7 +32,7 @@
 
 ---
 
-## 🔄 RTK Query & Offline Sync (Dev B)
+## 🔄 RTK Query & Offline Sync
 
 ### Issue 4 — Setup RTK & Base API
 
@@ -63,7 +63,7 @@
 
 ---
 
-## 📱 Native & Upload (Dev C)
+## 📱 Native & Upload
 
 ### Issue 7 — Image Picker + Permissions
 
