@@ -12,8 +12,6 @@ Créer un prototype complet d’application mobile en **React Native (TypeScript
 
 Le but : former le développeur à maîtriser la structure modulaire, les bonnes pratiques TypeScript, et l’intégration avec une API NestJS.
 
-Durée : **2 semaines (10 jours ouvrés)**.
-
 ---
 
 ## ⚙️ Stack / Contraintes à respecter
@@ -96,7 +94,7 @@ Durée : **2 semaines (10 jours ouvrés)**.
 
 ---
 
-### **Jour 7–8 : Upload & fichiers natifs**
+### **Upload & fichiers natifs**
 
 - ✅ Sélection d’images depuis galerie/caméra.
 - ✅ Preview avant upload.
@@ -120,7 +118,7 @@ Durée : **2 semaines (10 jours ouvrés)**.
 
 ---
 
-### **Jour 10 : Documentation & Livraison**
+### ** Documentation & Livraison**
 
 - ✅ README complet (installation, run, API endpoints).
 - ✅ .env.example.
