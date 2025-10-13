@@ -82,6 +82,21 @@ Le but : former le développeur à maîtriser la structure modulaire, les bonnes
 
 ---
 
+### **Authentification biométrique (Face ID / Touch ID)**
+
+- ✅ Installation et configuration de react-native-biometrics.
+- ✅ Vérification de la disponibilité biométrique (Face ID/Touch ID/Fingerprint).
+- ✅ Login biométrique après première authentification réussie.
+- ✅ Tokens sécurisés avec protection biométrique via SecureStore.
+- ✅ Toggle activable/désactivable dans les Settings.
+- ✅ Fallback automatique vers email/password si biométrie échoue.
+- ✅ Support multiplateforme : Face ID/Touch ID (iOS) + Fingerprint (Android).
+
+**Techno clé :** react-native-biometrics + SecureStore + Zustand.
+**Pourquoi :** Sécurité renforcée, UX fluide, authentification native intégrée au système.
+
+---
+
 ### ** Gestion d’état & Offline Sync**
 
 - ✅ WatermelonDB setup avec modèles (User, Project, Task).

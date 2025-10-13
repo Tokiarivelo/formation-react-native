@@ -46,6 +46,19 @@ Zustand  WatermelonDB (Local SQLite)
 - [ ] Gérer refresh automatique (interceptor)
 - [ ] Test e2e login+refresh
 
+### Issue 2.5 — Biometric Authentication (Face ID / Touch ID)
+
+**Checklist:**
+
+- [ ] Installer react-native-biometrics
+- [ ] Vérifier disponibilité biométrie (Face ID/Touch ID/Fingerprint)
+- [ ] Implémenter login biométrique après premier auth
+- [ ] Stocker tokens avec protection biométrique
+- [ ] Ajouter toggle dans Settings pour activer/désactiver
+- [ ] Gérer fallback vers email/password
+- [ ] Tests sur simulateur + device physique
+- [ ] Support Android (Fingerprint) + iOS (Face ID/Touch ID)
+
 ### Issue 3 — Navigation Setup
 
 **Checklist:**
