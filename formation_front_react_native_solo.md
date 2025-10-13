@@ -25,9 +25,8 @@ Durée : **2 semaines (10 jours ouvrés)**.
 
 ### 2. **Gestion d’état et API**
 
-- **Zustand** + **React Query** :
-  - Zustand offre une gestion d'état simple et performante avec moins de boilerplate.
-- React Query gère les appels API, le cache, la synchronisation et les états de chargement automatiquement.
+- **Zustand** offre une gestion d'état simple et performante avec moins de boilerplate.
+- **React Query** gère les appels API, le cache, la synchronisation et les états de chargement automatiquement.
 
 ### 3. **Réseau et sécurité**
 
