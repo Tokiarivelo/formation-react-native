@@ -7,7 +7,7 @@
 **Checklist:**
 
 - [ ] Créer LoginScreen (email, password)
-- [ ] Implémenter appel /v1/auth/login via RTK Query
+- [ ] Implémenter appel /auth/login via RTK Query
 - [ ] Stocker access/refresh tokens via SecureStore
 - [ ] Ajouter axios interceptor
 - [ ] Afficher erreurs backend
@@ -17,7 +17,7 @@
 
 **Checklist:**
 
-- [ ] Implémenter /v1/auth/refresh via RTK Query
+- [ ] Implémenter /auth/refresh via RTK Query
 - [ ] Rediriger vers Login si token expiré
 - [ ] Gérer refresh automatique (interceptor)
 - [ ] Test e2e login+refresh
@@ -52,7 +52,7 @@
 - [ ] Ajouter middleware hydrateStore()
 - [ ] Vérifier rehydratation après redémarrage
 
-### Issue 6 — Outbox & Sync Queue
+### Issue 6 — Outbox & Sync Queue (outbox)
 
 **Checklist:**
 
@@ -78,7 +78,7 @@
 
 **Checklist:**
 
-- [ ] Créer mutation multipart/form-data vers /v1/attachments
+- [ ] Créer mutation multipart/form-data vers /attachments
 - [ ] Ajouter barre de progression
 - [ ] Gérer erreurs & retry
 - [ ] Test upload mocké
@@ -90,6 +90,25 @@
 - [ ] Créer Button, Card, Input, Modal
 - [ ] Standardiser thème (colors, spacing)
 - [ ] Ajouter Storybook ou exemples
+
+---
+
+## 🌍 Internationalization (i18n)
+
+### Issue 11 — Setup i18n & Multiple Languages
+
+**Checklist:**
+
+- [ ] Installer react-i18next + react-native-localize
+- [ ] Configurer i18n (fr, en par défaut)
+- [ ] Créer fichiers traductions (locales/fr.json, locales/en.json)
+- [ ] Intégrer provider I18nextProvider dans App
+- [ ] Détecter langue système automatiquement
+- [ ] Ajouter sélecteur de langue dans Settings
+- [ ] Persister choix langue dans AsyncStorage
+- [ ] Traduire tous les textes statiques (auth, navigation, erreurs)
+- [ ] Gérer pluriels et interpolations
+- [ ] Tester changement langue à la volée
 
 ---
 
