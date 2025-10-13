@@ -1,3 +1,9 @@
+# Back End
+
+## Le backend se trouve dans le dossier [backend](./backend)
+
+**Documentation**: [backend API](./backend/README.md)
+
 # Front React Native - Performance Stack
 
 ## 🚀 Stack Optimisé
