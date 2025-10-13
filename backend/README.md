@@ -37,7 +37,7 @@ A comprehensive backend API built with NestJS v11, SQLite, Prisma, JWT authentic
 ### Prerequisites
 
 - Node.js 18+
-- npm or yarn
+- bun or yarn
 
 ### Installation
 
@@ -45,7 +45,7 @@ A comprehensive backend API built with NestJS v11, SQLite, Prisma, JWT authentic
 2. Install dependencies:
 
 ```bash
-npm install
+bun install
 ```
 
 3. Setup environment variables:
@@ -58,16 +58,16 @@ cp .env.example .env
 4. Generate Prisma client and setup database:
 
 ```bash
-npm run db:generate
-npm run db:push
-npm run db:migrate
-npm run db:seed
+bun run db:generate
+bun run db:push
+bun run db:migrate
+bun run db:seed
 ```
 
 5. Start the development server:
 
 ```bash
-npm run start:dev
+bun run start:dev
 ```
 
 The API will be available at:
@@ -138,30 +138,30 @@ See `.env.example` for all required environment variables:
 
 ```bash
 # Development
-npm run start:dev          # Start in development mode
-npm run start:debug        # Start in debug mode
+bun run start:dev          # Start in development mode
+bun run start:debug        # Start in debug mode
 
 # Production
-npm run build              # Build the application
-npm run start:prod         # Start in production mode
+bun run build              # Build the application
+bun run start:prod         # Start in production mode
 
 # Database
-npm run db:generate        # Generate Prisma client
-npm run db:push           # Push schema to database
-npm run db:migrate        # Run database migrations
-npm run db:seed           # Seed database with sample data
-npm run db:reset          # Reset database
-npm run db:studio         # Open Prisma Studio
+bun run db:generate        # Generate Prisma client
+bun run db:push           # Push schema to database
+bun run db:migrate        # Run database migrations
+bun run db:seed           # Seed database with sample data
+bun run db:reset          # Reset database
+bun run db:studio         # Open Prisma Studio
 
 # Testing
-npm run test              # Run unit tests
-npm run test:watch        # Run tests in watch mode
-npm run test:cov          # Run tests with coverage
-npm run test:e2e          # Run E2E tests
+bun run test              # Run unit tests
+bun run test:watch        # Run tests in watch mode
+bun run test:cov          # Run tests with coverage
+bun run test:e2e          # Run E2E tests
 
 # Code Quality
-npm run lint              # Run ESLint
-npm run format            # Format code with Prettier
+bun run lint              # Run ESLint
+bun run format            # Format code with Prettier
 ```
 
 ## Docker Deployment
@@ -224,9 +224,9 @@ The project includes comprehensive tests:
 Run tests:
 
 ```bash
-npm run test        # Unit tests
-npm run test:e2e    # E2E tests
-npm run test:cov    # With coverage
+bun run test        # Unit tests
+bun run test:e2e    # E2E tests
+bun run test:cov    # With coverage
 ```
 
 ## Architecture
@@ -258,9 +258,9 @@ This project is licensed under the UNLICENSED license.
 
   <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
     <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="bun Version" /></a>
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="bun Downloads" /></a>
 <a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
 <a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
 <a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
@@ -279,33 +279,33 @@ This project is licensed under the UNLICENSED license.
 ## Project setup
 
 ```bash
-$ npm install
+$ bun install
 ```
 
 ## Compile and run the project
 
 ```bash
 # development
-$ npm run start
+$ bun run start
 
 # watch mode
-$ npm run start:dev
+$ bun run start:dev
 
 # production mode
-$ npm run start:prod
+$ bun run start:prod
 ```
 
 ## Run tests
 
 ```bash
 # unit tests
-$ npm run test
+$ bun run test
 
 # e2e tests
-$ npm run test:e2e
+$ bun run test:e2e
 
 # test coverage
-$ npm run test:cov
+$ bun run test:cov
 ```
 
 ## Deployment
@@ -315,7 +315,7 @@ When you're ready to deploy your NestJS application to production, there are som
 If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
 
 ```bash
-$ npm install -g @nestjs/mau
+$ bun install -g @nestjs/mau
 $ mau deploy
 ```
 

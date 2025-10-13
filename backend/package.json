@@ -97,5 +97,6 @@
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
-  }
+  },
+  "packageManager": "bun@1.3.0"
 }
