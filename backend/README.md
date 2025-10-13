@@ -1,6 +1,242 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# NestJS v11 Backend
+
+A comprehensive backend API built with NestJS v11, SQLite, Prisma, JWT authentication, and file upload capabilities.
+
+## Features
+
+- **Authentication**: JWT with access and refresh tokens
+- **Database**: SQLite with Prisma ORM
+- **File Upload**: Multipart file upload with local storage
+- **API Documentation**: Swagger/OpenAPI documentation
+- **Docker Support**: Multi-stage Docker build with docker-compose
+- **Testing**: Jest unit and E2E tests
+- **Validation**: Request validation with class-validator
+- **Security**: Password hashing, JWT guards, user ownership validation
+
+## Tech Stack
+
+- **Framework**: NestJS v11
+- **Database**: SQLite with Prisma ORM
+- **Authentication**: JWT (jsonwebtoken) with refresh tokens
+- **File Upload**: Multer with local file storage
+- **Documentation**: Swagger/OpenAPI
+- **Testing**: Jest
+- **Validation**: class-validator, class-transformer
+- **Container**: Docker with multi-stage build
+
+## Domain Models
+
+- **User**: Authentication and user management
+- **Project**: Project management with ownership
+- **Task**: Task management linked to projects
+- **Attachment**: File upload and management
+- **RefreshToken**: Secure refresh token storage (hashed)
+
+## Quick Start
+
+### Prerequisites
+
+- Node.js 18+
+- npm or yarn
+
+### Installation
+
+1. Clone the repository
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Setup environment variables:
+```bash
+cp .env.example .env
+# Edit .env with your configuration
+```
+
+4. Generate Prisma client and setup database:
+```bash
+npm run db:generate
+npm run db:push
+npm run db:seed
+```
+
+5. Start the development server:
+```bash
+npm run start:dev
+```
+
+The API will be available at:
+- **API**: http://localhost:3000
+- **Swagger Documentation**: http://localhost:3000/api/docs
+
+### Default Admin User
+
+- **Email**: admin@example.com
+- **Password**: admin123
+
+## Environment Variables
+
+See `.env.example` for all required environment variables:
+
+- `DATABASE_URL`: SQLite database file path
+- `JWT_SECRET`: Secret key for JWT signing
+- `JWT_ACCESS_TOKEN_EXPIRES_IN`: Access token expiration (default: 15m)
+- `JWT_REFRESH_TOKEN_EXPIRES_IN`: Refresh token expiration (default: 7d)
+- `PORT`: Server port (default: 3000)
+- `UPLOAD_DEST`: File upload directory (default: ./uploads)
+- `MAX_FILE_SIZE`: Maximum file size in bytes (default: 5MB)
+
+## API Endpoints
+
+### Authentication
+- `POST /auth/register` - Register new user
+- `POST /auth/login` - User login
+- `POST /auth/refresh` - Refresh access token
+- `POST /auth/logout` - Logout user
+
+### Users
+- `GET /users` - Get all users
+- `GET /users/me` - Get current user profile
+- `GET /users/:id` - Get user by ID
+- `PUT /users/me` - Update current user profile
+- `PUT /users/:id` - Update user by ID
+- `DELETE /users/:id` - Delete user by ID
+
+### Projects
+- `POST /projects` - Create new project
+- `GET /projects` - Get user's projects
+- `GET /projects/:id` - Get project by ID
+- `PUT /projects/:id` - Update project
+- `DELETE /projects/:id` - Delete project
+
+### Tasks
+- `POST /tasks` - Create new task
+- `GET /tasks` - Get user's tasks (optional: ?projectId=xxx)
+- `GET /tasks/:id` - Get task by ID
+- `PUT /tasks/:id` - Update task
+- `DELETE /tasks/:id` - Delete task
+
+### Attachments
+- `POST /attachments/upload` - Upload file
+- `GET /attachments` - Get user's attachments
+- `GET /attachments/:id` - Get attachment details
+- `GET /attachments/:id/download` - Download file
+- `DELETE /attachments/:id` - Delete attachment
+
+## Scripts
+
+```bash
+# Development
+npm run start:dev          # Start in development mode
+npm run start:debug        # Start in debug mode
+
+# Production
+npm run build              # Build the application
+npm run start:prod         # Start in production mode
+
+# Database
+npm run db:generate        # Generate Prisma client
+npm run db:push           # Push schema to database
+npm run db:migrate        # Run database migrations
+npm run db:seed           # Seed database with sample data
+npm run db:reset          # Reset database
+npm run db:studio         # Open Prisma Studio
+
+# Testing
+npm run test              # Run unit tests
+npm run test:watch        # Run tests in watch mode
+npm run test:cov          # Run tests with coverage
+npm run test:e2e          # Run E2E tests
+
+# Code Quality
+npm run lint              # Run ESLint
+npm run format            # Format code with Prettier
+```
+
+## Docker Deployment
+
+### Using Docker Compose (Recommended)
+
+```bash
+# Build and start the application
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop the application
+docker-compose down
+```
+
+### Using Docker
+
+```bash
+# Build the image
+docker build -t nestjs-backend .
+
+# Run the container
+docker run -p 3000:3000 \
+  -e JWT_SECRET=your-secret-key \
+  -v $(pwd)/data:/app/data \
+  -v $(pwd)/uploads:/app/uploads \
+  nestjs-backend
+```
+
+## File Upload
+
+The API supports file uploads with the following constraints:
+- **Maximum file size**: 5MB (configurable)
+- **Allowed types**: Images (JPEG, PNG, GIF, WebP), Documents (PDF, DOC, DOCX, XLS, XLSX), Text files, ZIP archives
+- **Storage**: Local filesystem in `/uploads` directory
+- **Security**: File type validation, user ownership validation
+
+## Security Features
+
+- **Password Hashing**: bcryptjs with salt rounds
+- **JWT Authentication**: Secure token-based authentication
+- **Refresh Tokens**: Hashed refresh tokens with revocation
+- **Authorization Guards**: Route-level access control
+- **Input Validation**: Request validation with class-validator
+- **File Upload Security**: MIME type validation and size limits
+- **User Ownership**: Resource access restricted to owners
+
+## Testing
+
+The project includes comprehensive tests:
+- **Unit Tests**: Service and controller testing
+- **E2E Tests**: Full application flow testing
+- **Mocking**: Database and external dependencies mocked
+- **Coverage**: Test coverage reporting available
+
+Run tests:
+```bash
+npm run test        # Unit tests
+npm run test:e2e    # E2E tests
+npm run test:cov    # With coverage
+```
+
+## Architecture
+
+The application follows NestJS best practices:
+- **Modular Architecture**: Feature-based modules
+- **Dependency Injection**: IoC container for dependencies
+- **Guards**: Authentication and authorization
+- **Pipes**: Request validation and transformation
+- **Interceptors**: Cross-cutting concerns
+- **DTOs**: Data transfer objects for type safety
+- **Services**: Business logic separation
+- **Controllers**: HTTP request handling
+
+## Contributing
+
+1. Follow the existing code style
+2. Write tests for new features
+3. Update documentation as needed
+4. Ensure all tests pass before submitting
+
+## License
+
+This project is licensed under the UNLICENSED license.
 
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest
