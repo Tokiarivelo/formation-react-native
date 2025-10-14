@@ -325,7 +325,7 @@ Architecture hybride optimale :
 
 ### **store/persist/**
 
-- `hydrateStore.ts` : restaure le cache et le store depuis AsyncStorage.
+- `hydrateStore.ts` : restaure l’état du store (Zustand) depuis MMKV (ou un autre key-value store rapide), le cache React Query depuis WatermelonDB, et les collections WatermelonDB depuis la base locale.
 - `outbox.ts` : stocke les mutations offline et les rejoue automatiquement (backoff + retry) lorsque la connexion revient.
 - Intégré avec `@react-native-community/netinfo` pour détecter l’état réseau.
 
