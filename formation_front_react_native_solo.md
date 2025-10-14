@@ -113,7 +113,7 @@ Le but : former le développeur à maîtriser la structure modulaire, les bonnes
 
 - ✅ Sélection d’images depuis galerie/caméra.
 - ✅ Preview avant upload.
-- ✅ Upload multipart via React Query mutation.
+- ✅ Upload multipart via une mutation React Query.
 - ✅ Gestion des erreurs et du retry.
 
 **Techno clé :** react-native-image-picker + FormData + Axios.
