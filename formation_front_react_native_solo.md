@@ -18,7 +18,7 @@ Le but : former le développeur à maîtriser la structure modulaire, les bonnes
 
 ### 1. **Langage et framework**
 
-- **React Native expo** — Framework recommandé.
+- **React Native CLI** — Pour avoir plus de contôle sur les code natifs.
 - **TypeScript** — typage strict pour une meilleure maintenabilité et autocomplétion.
 
 ### 2. **Gestion d’état et API**
