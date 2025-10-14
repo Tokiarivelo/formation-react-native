@@ -104,7 +104,7 @@ Le but : former le développeur à maîtriser la structure modulaire, les bonnes
 - ✅ React Query offline mutations avec delta sync.
 - ✅ Test performance + mode offline → online sync.
 
-**Techno clé :** Redux Toolkit + AsyncStorage.
+**Techno clé :** Zustand + WatermelonDB + React Query.
 **Pourquoi :** architecture prédictive et performante pour les apps offline-first.
 
 ---
@@ -113,7 +113,7 @@ Le but : former le développeur à maîtriser la structure modulaire, les bonnes
 
 - ✅ Sélection d’images depuis galerie/caméra.
 - ✅ Preview avant upload.
-- ✅ Upload multipart via RTK Query mutation.
+- ✅ Upload multipart via React Query mutation.
 - ✅ Gestion des erreurs et du retry.
 
 **Techno clé :** react-native-image-picker + FormData + Axios.
@@ -325,7 +325,7 @@ Architecture hybride optimale :
 
 ### **store/persist/**
 
-- `hydrateStore.ts` : restaure le cache et le store Redux depuis AsyncStorage.
+- `hydrateStore.ts` : restaure le cache et le store depuis AsyncStorage.
 - `outbox.ts` : stocke les mutations offline et les rejoue automatiquement (backoff + retry) lorsque la connexion revient.
 - Intégré avec `@react-native-community/netinfo` pour détecter l’état réseau.
 
