@@ -104,8 +104,8 @@ Le but : former le développeur à maîtriser la structure modulaire, les bonnes
 - ✅ React Query offline mutations avec delta sync.
 - ✅ Test performance + mode offline → online sync.
 
-**Techno clé :** Zustand + WatermelonDB + React Query.
-**Pourquoi :** architecture prédictive et performante pour les apps offline-first.
+**Techno clé :** Zustand + WatermelonDB + AsyncStorage + React Query.
+**Pourquoi :** WatermelonDB pour les données structurées offline, AsyncStorage pour l’hydratation légère (Zustand/UI state), architecture prédictive et performante pour les apps offline-first.
 
 ---
 
