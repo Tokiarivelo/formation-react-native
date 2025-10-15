@@ -5,12 +5,19 @@
  * @format
  */
 
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
+import { Button, StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
 import {
   SafeAreaProvider,
-  useSafeAreaInsets,
 } from 'react-native-safe-area-context';
+import LoginScreen from './src/modules/auth/screens/LoginScreen';
+
+import React from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { refreshAccessToken } from './src/modules/auth/api';
+
+// Create a client
+const queryClient = new QueryClient();
+
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -24,14 +31,12 @@ function App() {
 }
 
 function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
-
   return (
     <View style={styles.container}>
-      <NewAppScreen
-        templateFileName="App.tsx"
-        safeAreaInsets={safeAreaInsets}
-      />
+      <QueryClientProvider client={queryClient}>
+        <LoginScreen />
+      </QueryClientProvider>
+      <Button onPress={async () => await refreshAccessToken()} title="refresh access token" />
     </View>
   );
 }
