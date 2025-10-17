@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
 import { configs } from '../../configs/config';
-import { AuthTokens, clearTokens, getRefreshToken, saveTokens } from './tokenStore';
+import { AuthTokens, getRefreshToken, saveTokens } from './tokenStore';
 
 // --- CONFIGURATION ---
 const API_URL = configs.apiUrl;
@@ -31,9 +31,6 @@ interface AuthResponse extends AuthTokens {
 export const loginUser = async (credentials: UserCredentials): Promise<AuthResponse> => {
     try {
         const response = await axios.post<AuthResponse>(`${API_URL}/auth/login`, credentials);
-
-        await saveTokens(response.data);
-
         return response.data;
     } catch (error) {
         const axiosError = error as AxiosError;
@@ -79,9 +76,6 @@ export const logoutUser = async (): Promise<void> => {
             await axios.post(`${API_URL}/logout`, { refreshToken });
         }
     } catch (error) {
-        console.warn('Server side logout failed or token already invalid, proceeding with local cleanup.');
-    } finally {
-        // 3. Clear all tokens from local storage immediately
-        await clearTokens();
+        console.warn('Server side logout failed or token already invalid, proceeding with local cleanup.', error);
     }
 };

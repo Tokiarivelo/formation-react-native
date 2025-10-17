@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import AppTextInput from '../../../components/ui/AppTextInput'
 import AppPressable from '../../../components/ui/AppPressable';
 import AppSwitch from '../../../components/ui/AppSwitch';
-import { useLogin } from '../hooks/useAuth';
+import { useAuth } from '../hooks/useAuth';
 
 function getErrorMessages(error: any): string[] {
   if (!error) return [];
@@ -27,10 +27,10 @@ const AuthForm = ({ signUp }: { signUp: boolean }) => {
   const [confirm, setConfirm] = useState("");
 
   const [showPassword, setShowPassword] = useState(false);
-  const loginMutation = useLogin();
+  const { login } = useAuth();
 
   const handleLogin = () => {
-    loginMutation.mutate({ email, password });
+    login.mutate({ email, password });
   };
 
   return (
@@ -72,13 +72,13 @@ const AuthForm = ({ signUp }: { signUp: boolean }) => {
 
       <Text>Show password?</Text>
 
-      <AppPressable onPress={handleLogin} disabled={loginMutation.isPending}>
-        {signUp ? `Sign in` : `${loginMutation.isPending ? 'Loging in...' : 'Log in'}`}
+      <AppPressable onPress={handleLogin} disabled={login.isPending}>
+        {signUp ? `Sign in` : `${login.isPending ? 'Loging in...' : 'Log in'}`}
       </AppPressable>
 
-      {loginMutation.isError && (
+      {login.isError && (
         <View style={{ marginTop: 10 }}>
-          {getErrorMessages(loginMutation.error).map((msg, i) => (
+          {getErrorMessages(login.error).map((msg, i) => (
             <Text key={i} style={{ color: 'red', marginBottom: 4 }}>
               {msg}
             </Text>

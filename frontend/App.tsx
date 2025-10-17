@@ -5,46 +5,33 @@
  * @format
  */
 
-import { Button, StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
+import { StatusBar, useColorScheme } from 'react-native';
 import {
   SafeAreaProvider,
 } from 'react-native-safe-area-context';
-import LoginScreen from './src/modules/auth/screens/LoginScreen';
 
 import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { refreshAccessToken } from './src/modules/auth/api';
-
-// Create a client
+import { NavigationContainer } from '@react-navigation/native';
+import { AuthProvider } from './src/modules/auth/AuthProvider';
+import RootNavigator from './src/navigation/RootNavigator';
 const queryClient = new QueryClient();
-
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
     <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <AppContent />
+      <QueryClientProvider client={queryClient}>
+        <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+        <AuthProvider>
+          <NavigationContainer>
+            <RootNavigator />
+          </NavigationContainer>
+        </AuthProvider>
+      </QueryClientProvider>
     </SafeAreaProvider>
   );
 }
-
-function AppContent() {
-  return (
-    <View style={styles.container}>
-      <QueryClientProvider client={queryClient}>
-        <LoginScreen />
-      </QueryClientProvider>
-      <Button onPress={async () => await refreshAccessToken()} title="refresh access token" />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
 
 export default App;
