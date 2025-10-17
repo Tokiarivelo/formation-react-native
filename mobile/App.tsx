@@ -14,6 +14,8 @@ import {
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
+  const val = "";
+  
 
   return (
     <SafeAreaProvider>
