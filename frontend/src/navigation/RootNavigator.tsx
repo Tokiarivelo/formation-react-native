@@ -1,13 +1,14 @@
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import renderAppStack from './AppStack';
 import renderAuthStack from './AuthStack';
-import { useAuth } from '../modules/auth/hooks/useAuth';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useAuthStore } from '../store/authStore';
 
 const Root = createNativeStackNavigator();
 
 const RootNavigator = () => {
-    const { isLoggedIn, isLoading } = useAuth();
+    const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+    const isLoading = useAuthStore((state) => state.isLoading);
 
     if (isLoading) {
         return (

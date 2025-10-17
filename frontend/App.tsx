@@ -10,25 +10,28 @@ import {
   SafeAreaProvider,
 } from 'react-native-safe-area-context';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { NavigationContainer } from '@react-navigation/native';
-import { AuthProvider } from './src/modules/auth/AuthProvider';
 import RootNavigator from './src/navigation/RootNavigator';
+import { useAuthStore } from './src/store/authStore';
+
+
 const queryClient = new QueryClient();
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
-
+  const checkAuthStatus = useAuthStore((state) => state.checkAuthStatus);
+  useEffect(() => {
+    checkAuthStatus();
+  }, [checkAuthStatus]);
   return (
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
         <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-        <AuthProvider>
-          <NavigationContainer>
-            <RootNavigator />
-          </NavigationContainer>
-        </AuthProvider>
+        <NavigationContainer>
+          <RootNavigator />
+        </NavigationContainer>
       </QueryClientProvider>
     </SafeAreaProvider>
   );

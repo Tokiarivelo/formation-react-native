@@ -1,14 +1,15 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { loginUser, logoutUser } from "../api";
 import { Alert } from "react-native";
-import { useContext, useEffect } from "react";
-import { AuthContext } from "../AuthProvider";
 import { clearTokens, saveTokens } from "../tokenStore";
 import { clearOnLogout, setOnLogout } from "../../../services/navigationService";
+import { useAuthStore } from "../../../store/authStore";
+import { useEffect } from "react";
 
 
 export const useAuth = () => {
-    const { isLoggedIn, isLoading, authLogin, authLogout } = useContext(AuthContext);
+    const authLogout = useAuthStore((state) => state.authLogout)
+    const checkAuthStatus = useAuthStore((state) => state.checkAuthStatus)
     const queryClient = useQueryClient();
 
     const loginMutation = useMutation({
@@ -16,7 +17,7 @@ export const useAuth = () => {
         onSuccess: async (data) => {
             console.log(data);
             await saveTokens(data);
-            authLogin();
+            checkAuthStatus();
             Alert.alert('Login Successful', `Welcome! Token: ${data.accessToken.substring(0, 10)}...`);
         },
         onError: (err: any) => {
@@ -51,8 +52,6 @@ export const useAuth = () => {
     }, [logoutMutation]);
 
     return {
-        isLoggedIn,
-        isLoading,
         login: loginMutation,
         logout: logoutMutation
     }
