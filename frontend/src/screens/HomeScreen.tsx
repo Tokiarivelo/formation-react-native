@@ -1,50 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, ActivityIndicator, Button } from 'react-native';
-import { getAccessToken, getRefreshToken } from '../modules/auth/tokenStore';
+import React from 'react';
+import { View, Text, Button } from 'react-native';
 import { useAuth } from '../modules/auth/hooks/useAuth';
+import { useAuthStore } from '../store/authStore';
 
 const HomeScreen = () => {
-    const [accessToken, setAccessToken] = useState<string | null>(null);
-    const [refreshToken, setRefreshToken] = useState<string | null>(null);
-    const [loading, setLoading] = useState(true);
     const { logout } = useAuth();
+    const userState = useAuthStore((state) => state.userState);
 
-    //JUST FOR TESTING PURPOSE --- REMOVE LATER
-    console.log("access : ", accessToken);
-    console.log("refresh : ", refreshToken);
-    useEffect(() => {
-        let mounted = true;
-        (async () => {
-            try {
-                // await the async token getters
-                const a = await getAccessToken();
-                const r = await getRefreshToken();
-                if (!mounted) return;
-                setAccessToken(a ?? null);
-                setRefreshToken(r ?? null);
-            } catch (err) {
-                console.error('Failed to read tokens', err);
-                if (mounted) {
-                    setAccessToken(null);
-                    setRefreshToken(null);
-                }
-            } finally {
-                if (mounted) setLoading(false);
-            }
-        })();
-
-        return () => {
-            mounted = false;
-        };
-    }, []);
-
-    if (loading) {
-        return (
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                <ActivityIndicator />
-            </View>
-        );
-    }
+    // if (loading) {
+    //     return (
+    //         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    //             <ActivityIndicator />
+    //         </View>
+    //     );
+    // }
 
     const handleLogout = async () => {
         await logout.mutateAsync();
@@ -53,10 +22,16 @@ const HomeScreen = () => {
     return (
         <View style={{ padding: 16 }}>
             <Text style={{ fontWeight: 'bold' }}>HomeScreen</Text>
-
-            {/*JUST FOR TESTING PURPOSE --- REMOVE LATER*/}
-            <Text>AccessToken: {accessToken ?? 'null'}</Text>
-            <Text>RefreshToken: {refreshToken ?? 'null'}</Text>
+            <Text style={{ fontWeight: 'bold' }}>Welcome</Text>
+            <Text>Id: {userState?.id}</Text>
+            <Text>email: {userState?.email}</Text>
+            <Text>Username: {userState?.username}</Text>
+            <Text>first Name: {userState?.firstName}</Text>
+            <Text>last Name: {userState?.lastName}</Text>
+            <Text>is active: {userState?.isActive}</Text>
+            <Text>Role: {userState?.role}</Text>
+            <Text>created at: {userState?.createdAt}</Text>
+            <Text>updated at: {userState?.updatedAt}</Text>
             <Button title="logout" onPress={handleLogout} />
         </View>
     );

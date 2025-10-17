@@ -13,15 +13,15 @@ interface UserCredentials {
 // Response when logging in or registering
 interface AuthResponse extends AuthTokens {
     user: {
-        createdAt: String,
-        email: string;
-        firstName: String,
         id: number;
-        isActive: boolean,
-        lastName: String,
-        role: String,
-        updatedAt: String,
+        email: string;
         username: String,
+        firstName: String,
+        lastName: String,
+        isActive: boolean,
+        role: String,
+        createdAt: String,
+        updatedAt: String,
     };
 }
 
@@ -41,7 +41,7 @@ export const loginUser = async (credentials: UserCredentials): Promise<AuthRespo
 /**
  * POST /auth/refresh - Refresh access token
  */
-export const refreshAccessToken = async (): Promise<AuthTokens> => {
+export const refreshAccessToken = async (): Promise<AuthResponse> => {
     const refreshToken = await getRefreshToken();
 
     if (!refreshToken) {
@@ -49,7 +49,7 @@ export const refreshAccessToken = async (): Promise<AuthTokens> => {
     }
 
     try {
-        const response = await axios.post<AuthTokens>(`${API_URL}/auth/refresh`, {
+        const response = await axios.post<AuthResponse>(`${API_URL}/auth/refresh`, {
             refreshToken
         });
 

@@ -8,8 +8,9 @@ import { useEffect } from "react";
 
 
 export const useAuth = () => {
-    const authLogout = useAuthStore((state) => state.authLogout)
-    const checkAuthStatus = useAuthStore((state) => state.checkAuthStatus)
+    const authLogin = useAuthStore((state) => state.authLogin);
+    const authLogout = useAuthStore((state) => state.authLogout);
+    const checkAuthStatus = useAuthStore((state) => state.checkAuthStatus);
     const queryClient = useQueryClient();
 
     const loginMutation = useMutation({
@@ -18,7 +19,7 @@ export const useAuth = () => {
             console.log(data);
             await saveTokens(data);
             checkAuthStatus();
-            Alert.alert('Login Successful', `Welcome! Token: ${data.accessToken.substring(0, 10)}...`);
+            authLogin(data.user);
         },
         onError: (err: any) => {
             console.error('Login error raw:', err);

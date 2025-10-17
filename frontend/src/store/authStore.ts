@@ -3,10 +3,24 @@ import { clearTokens, getAccessToken, getRefreshToken } from "../modules/auth/to
 import { jwtDecode } from "jwt-decode";
 import { refreshAccessToken } from "../modules/auth/api";
 
+interface User {
+    id: number;
+    email: string;
+    username: String,
+    firstName: String,
+    lastName: String,
+    isActive: boolean,
+    role: String,
+    createdAt: String,
+    updatedAt: String,
+}
+
 type AuthState = {
+    userState: User | null
     isLoggedIn: boolean,
     isLoading: boolean,
-    authLogout: () => void
+    authLogin: (data: User) => void,
+    authLogout: () => void,
     checkAuthStatus: () => void
 }
 
@@ -14,12 +28,18 @@ export const useAuthStore = create<AuthState>((set) => ({
     //state
     isLoggedIn: false,
     isLoading: true,
+    userState: null,
 
     //actions
-    authLogout: () => {
-        set({ isLoggedIn: false })
+    authLogin: (data: User) => {
+        set({ userState: data })
     },
-    // 3. Async logic from your useEffect, now as an action
+
+    authLogout: () => {
+        set({ isLoggedIn: false, userState: null })
+    },
+
+
     checkAuthStatus: async () => {
         try {
             set({ isLoading: true });
@@ -37,7 +57,9 @@ export const useAuthStore = create<AuthState>((set) => ({
             // If not, try to refresh
             const refreshToken = await getRefreshToken();
             if (refreshToken) {
-                await refreshAccessToken();
+                const data = await refreshAccessToken();
+                //update user state
+                set({ userState: data.user })
                 set({ isLoggedIn: true, isLoading: false });
                 return; // Refresh successful
             }
