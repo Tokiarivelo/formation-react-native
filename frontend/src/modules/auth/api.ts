@@ -8,6 +8,9 @@ const API_URL = configs.apiUrl;
 interface UserCredentials {
     email: string;
     password: string;
+    username?: string,
+    firstName?: string,
+    lastName?: string,
 }
 
 // Response when logging in or registering
@@ -23,6 +26,23 @@ interface AuthResponse extends AuthTokens {
         createdAt: String,
         updatedAt: String,
     };
+}
+
+/**
+ * 
+ * @param credentials user credentials
+ */
+export const registerUser = async (credentials: UserCredentials): Promise<AuthResponse> => {
+
+    try {
+        const response = await axios.post<AuthResponse>(`${API_URL}/auth/register`, credentials);
+        return response.data
+    }
+    catch (error) {
+        const axiosError = error as AxiosError;
+        throw axiosError.response?.data || { message: 'Register failed.' };
+
+    }
 }
 
 /**
