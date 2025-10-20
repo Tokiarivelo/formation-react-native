@@ -1,32 +1,10 @@
 import axios, { AxiosError } from 'axios';
 import { configs } from '../../configs/config';
-import { AuthTokens, getRefreshToken, saveTokens } from './tokenStore';
+import { getRefreshToken, saveTokens } from './tokenStore';
+import { AuthResponse, UserCredentials } from '../../types/api';
 
 // --- CONFIGURATION ---
 const API_URL = configs.apiUrl;
-
-interface UserCredentials {
-    email: string;
-    password: string;
-    username?: string,
-    firstName?: string,
-    lastName?: string,
-}
-
-// Response when logging in or registering
-interface AuthResponse extends AuthTokens {
-    user: {
-        id: number;
-        email: string;
-        username: String,
-        firstName: String,
-        lastName: String,
-        isActive: boolean,
-        role: String,
-        createdAt: String,
-        updatedAt: String,
-    };
-}
 
 /**
  * 

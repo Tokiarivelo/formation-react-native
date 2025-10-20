@@ -1,14 +1,6 @@
 import { Token } from '../../constants';
 import * as Keychain from 'react-native-keychain';
-
-// --- TYPE DEFINITIONS (Based on typical NestJS JWT responses) ---
-export interface AuthTokens {
-    accessToken: string;
-    refreshToken: string;
-}
-
-
-// --- SECURE STORAGE UTILITIES (using react-native-keychain) ---
+import { AuthTokens } from '../../types/api';
 
 /**
  * Stores both access and refresh tokens securely using Keychain.
@@ -77,31 +69,6 @@ export const getRefreshToken = async (): Promise<string | null> => {
         return null;
     }
 };
-
-/**
- * Retrieves the tokens (access and refresh)
- */
-// export const getTokens = async (): Promise<AuthTokens | null> => {
-//     try {
-//         const accessCredentials = await Keychain.getGenericPassword({
-//             service: Token.KEYCHAIN_SERVICE_ACCESS
-//         });
-//         const refreshCredentials = await Keychain.getGenericPassword({
-//             service: Token.KEYCHAIN_SERVICE_REFRESH
-//         })
-
-//         if (accessCredentials && accessCredentials.password && refreshCredentials && refreshCredentials.password) {
-//             return {
-//                 accessToken: accessCredentials.password,
-//                 refreshToken: refreshCredentials.password
-//             }
-//         }
-//         return null;
-//     } catch (e) {
-//         console.error('Error retrieving tokens from SecureStore:', e);
-//         return null;
-//     }
-// }
 
 /**
  * Clears all locally stored tokens from Keychain.
