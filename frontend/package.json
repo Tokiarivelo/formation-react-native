@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@nozbe/watermelondb": "^0.25.5",
     "@react-native/new-app-screen": "0.82.0",
     "@react-navigation/elements": "^2.6.5",
     "@react-navigation/native": "^7.1.18",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "@babel/plugin-proposal-decorators": "^7.28.0",
     "@babel/preset-env": "^7.25.3",
     "@babel/runtime": "^7.25.0",
     "@react-native-community/cli": "20.0.0",
