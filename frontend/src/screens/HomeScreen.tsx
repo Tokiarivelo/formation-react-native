@@ -1,22 +1,14 @@
 import React from 'react';
 import { View, Text, Button } from 'react-native';
-import { useAuth } from '../modules/auth/hooks/useAuth';
 import { useAuthStore } from '../store/authStore';
+import { useLogout } from '../modules/auth/hooks/useAuth';
 
 const HomeScreen = () => {
-    const { logout } = useAuth();
+    const { logoutAsync } = useLogout();
     const userState = useAuthStore((state) => state.userState);
 
-    // if (loading) {
-    //     return (
-    //         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-    //             <ActivityIndicator />
-    //         </View>
-    //     );
-    // }
-
     const handleLogout = async () => {
-        await logout.mutateAsync();
+        await logoutAsync();
     }
 
     return (

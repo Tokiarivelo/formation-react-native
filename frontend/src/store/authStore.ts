@@ -32,11 +32,11 @@ export const useAuthStore = create<AuthState>((set) => ({
 
     //actions
     authLogin: (data: User) => {
-        set({ userState: data })
+        set({ userState: data, isLoggedIn: true, isLoading: false })
     },
 
     authLogout: () => {
-        set({ isLoggedIn: false, userState: null })
+        set({ isLoggedIn: false, userState: null, isLoading: false })
     },
 
 
@@ -59,8 +59,7 @@ export const useAuthStore = create<AuthState>((set) => ({
             if (refreshToken) {
                 const data = await refreshAccessToken();
                 //update user state
-                set({ userState: data.user })
-                set({ isLoggedIn: true, isLoading: false });
+                set({ userState: data.user, isLoggedIn: true, isLoading: false });
                 return; // Refresh successful
             }
 

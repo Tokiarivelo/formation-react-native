@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import AppTextInput from '../../../components/ui/AppTextInput'
 import AppPressable from '../../../components/ui/AppPressable';
 import AppSwitch from '../../../components/ui/AppSwitch';
-import { useAuth } from '../hooks/useAuth';
+import { useLogin, useRegister } from '../hooks/useAuth';
 
 function getErrorMessages(error: any): string[] {
   if (!error) return [];
@@ -24,14 +24,20 @@ function getErrorMessages(error: any): string[] {
 const AuthForm = ({ signUp }: { signUp: boolean }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
+  const [username, setUsername] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastname] = useState("");
 
   const [showPassword, setShowPassword] = useState(false);
-  const { login } = useAuth();
+  const { login, error: loginError, isLoading: loginLoading, isError: loginIsError } = useLogin();
+  const { register, error: registerError, isLoading: registerLoading, isError: registerIsError } = useRegister();
 
   const handleLogin = () => {
-    login.mutate({ email, password });
+    login({ email, password });
   };
+  const handleSignUp = () => {
+    register({ email, password, username, firstName, lastName });
+  }
 
   return (
     <View>
@@ -40,7 +46,7 @@ const AuthForm = ({ signUp }: { signUp: boolean }) => {
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
-        textContentType="username"
+        textContentType="emailAddress"
         autoComplete="email"
       />
 
@@ -54,14 +60,29 @@ const AuthForm = ({ signUp }: { signUp: boolean }) => {
       />
 
       {signUp && (
-        <AppTextInput
-          placeholder="confirm password"
-          secure={!showPassword}
-          value={confirm}
-          onChangeText={setConfirm}
-          textContentType="password"
-          autoComplete="password"
-        />
+        <>
+          <AppTextInput
+            placeholder="username"
+            value={username}
+            onChangeText={setUsername}
+            textContentType="username"
+            autoComplete="username"
+          />
+          <AppTextInput
+            placeholder="First Name"
+            value={firstName}
+            onChangeText={setFirstName}
+            textContentType="name"
+            autoComplete="name"
+          />
+          <AppTextInput
+            placeholder="Last Name"
+            value={lastName}
+            onChangeText={setLastname}
+            textContentType="name"
+            autoComplete="name"
+          />
+        </>
       )}
 
       <AppSwitch value={showPassword}
@@ -72,13 +93,23 @@ const AuthForm = ({ signUp }: { signUp: boolean }) => {
 
       <Text>Show password?</Text>
 
-      <AppPressable onPress={handleLogin} disabled={login.isPending}>
-        {signUp ? `Sign in` : `${login.isPending ? 'Loging in...' : 'Log in'}`}
+      <AppPressable onPress={signUp ? handleSignUp : handleLogin} disabled={loginLoading || registerLoading}>
+        {signUp ? `${registerLoading ? 'Signing up...' : 'Sign up'}` : `${loginLoading ? 'Loging in...' : 'Log in'}`}
       </AppPressable>
 
-      {login.isError && (
+      {loginIsError && (
         <View style={{ marginTop: 10 }}>
-          {getErrorMessages(login.error).map((msg, i) => (
+          {getErrorMessages(loginError).map((msg, i) => (
+            <Text key={i} style={{ color: 'red', marginBottom: 4 }}>
+              {msg}
+            </Text>
+          ))}
+        </View>
+      )}
+
+      {registerIsError && (
+        <View style={{ marginTop: 10 }}>
+          {getErrorMessages(registerError).map((msg, i) => (
             <Text key={i} style={{ color: 'red', marginBottom: 4 }}>
               {msg}
             </Text>

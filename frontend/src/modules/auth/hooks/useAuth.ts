@@ -1,35 +1,51 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { loginUser, logoutUser } from "../api";
+import { loginUser, logoutUser, registerUser } from "../api";
 import { Alert } from "react-native";
 import { clearTokens, saveTokens } from "../tokenStore";
-import { clearOnLogout, setOnLogout } from "../../../services/navigationService";
 import { useAuthStore } from "../../../store/authStore";
-import { useEffect } from "react";
 
 
-export const useAuth = () => {
+// export const useAuth = () => {
+//     const authLogin = useAuthStore((state) => state.authLogin);
+//     const checkAuthStatus = useAuthStore((state) => state.checkAuthStatus);
+
+//     //setOnLogOut that is called when a logout is triggered
+//     useEffect(() => {
+//         setOnLogout(() => logoutMutation.mutateAsync);
+//         return () => clearOnLogout();
+//     }, [logoutMutation]);
+
+//     return {
+//     }
+// }
+
+export const useLogin = () => {
     const authLogin = useAuthStore((state) => state.authLogin);
-    const authLogout = useAuthStore((state) => state.authLogout);
-    const checkAuthStatus = useAuthStore((state) => state.checkAuthStatus);
-    const queryClient = useQueryClient();
-
     const loginMutation = useMutation({
         mutationFn: loginUser,
         onSuccess: async (data) => {
-            console.log(data);
             await saveTokens(data);
-            checkAuthStatus();
             authLogin(data.user);
         },
         onError: (err: any) => {
             console.error('Login error raw:', err);
         },
-    })
+    });
+
+    return {
+        login: loginMutation.mutate,
+        isLoading: loginMutation.isPending,
+        error: loginMutation.error,
+        isError: loginMutation.isError,
+    }
+}
+
+export const useLogout = () => {
+    const authLogout = useAuthStore((state) => state.authLogout);
+    const queryClient = useQueryClient();
 
     const logoutMutation = useMutation({
         mutationFn: logoutUser,
-        onSuccess: () => {
-        },
         onMutate: async () => {
             // cancel outgoing queries so they don't update after we clear state
             await queryClient.cancelQueries();
@@ -46,14 +62,30 @@ export const useAuth = () => {
         },
     })
 
-    //setOnLogOut that is called when a logout is triggered
-    useEffect(() => {
-        setOnLogout(() => logoutMutation.mutateAsync);
-        return () => clearOnLogout();
-    }, [logoutMutation]);
+    return {
+        logout: logoutMutation.mutate,
+        isLoading: logoutMutation.isPending,
+        logoutAsync: logoutMutation.mutateAsync,
+    }
+}
+
+export const useRegister = () => {
+    const authLogin = useAuthStore((state) => state.authLogin);
+    const registerMutation = useMutation({
+        mutationFn: registerUser,
+        onSuccess: async (data) => {
+            await saveTokens(data);
+            authLogin(data.user);
+        },
+        onError: (err: any) => {
+            console.error('Login error raw:', err);
+        },
+    });
 
     return {
-        login: loginMutation,
-        logout: logoutMutation
+        register: registerMutation.mutate,
+        isLoading: registerMutation.isPending,
+        error: registerMutation.error,
+        isError: registerMutation.isError,
     }
 }
