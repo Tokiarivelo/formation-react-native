@@ -4,6 +4,19 @@ import { Associations } from '@nozbe/watermelondb/Model';
 import Project from './Project';
 import User from './User';
 import Attachment from './Attachment';
+export enum TaskStatus {
+    TODO = 'TODO',
+    IN_PROGRESS = 'IN_PROGRESS',
+    DONE = 'DONE',
+    CANCELLED = 'CANCELLED',
+}
+
+export enum Priority {
+    LOW = 'LOW',
+    MEDIUM = 'MEDIUM',
+    HIGH = 'HIGH',
+    URGENT = 'URGENT',
+}
 
 export default class Task extends Model {
     static table = 'tasks';
@@ -15,8 +28,8 @@ export default class Task extends Model {
 
     @field('title') title!: string;
     @field('description') description!: string;
-    @field('completed') completed!: boolean;
-    @field('priority') priority!: 'low' | 'medium' | 'high' | 'urgent';
+    @field('status') status!: TaskStatus;
+    @field('priority') priority!: Priority;
     @field('projectId') projectId!: string;
     @field('userId') userId!: string;
     @field('isDirty') isDirty!: boolean;
