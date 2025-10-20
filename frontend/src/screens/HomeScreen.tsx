@@ -4,7 +4,7 @@ import { useAuthStore } from '../store/authStore';
 import { useLogout } from '../modules/auth/hooks/useAuth';
 
 const HomeScreen = () => {
-    const { logoutAsync } = useLogout();
+    const { mutateAsync: logoutAsync } = useLogout();
     const userState = useAuthStore((state) => state.userState);
 
     const handleLogout = async () => {
@@ -20,7 +20,7 @@ const HomeScreen = () => {
             <Text>Username: {userState?.username}</Text>
             <Text>first Name: {userState?.firstName}</Text>
             <Text>last Name: {userState?.lastName}</Text>
-            <Text>is active: {userState?.isActive}</Text>
+            <Text>is active: {userState?.isActive ? "yes" : "no"}</Text>
             <Text>Role: {userState?.role}</Text>
             <Text>created at: {userState?.createdAt}</Text>
             <Text>updated at: {userState?.updatedAt}</Text>

@@ -21,7 +21,7 @@ import { useAuthStore } from "../../../store/authStore";
 
 export const useLogin = () => {
     const authLogin = useAuthStore((state) => state.authLogin);
-    const loginMutation = useMutation({
+    return useMutation({
         mutationFn: loginUser,
         onSuccess: async (data) => {
             await saveTokens(data);
@@ -31,20 +31,13 @@ export const useLogin = () => {
             console.error('Login error raw:', err);
         },
     });
-
-    return {
-        login: loginMutation.mutate,
-        isLoading: loginMutation.isPending,
-        error: loginMutation.error,
-        isError: loginMutation.isError,
-    }
 }
 
 export const useLogout = () => {
     const authLogout = useAuthStore((state) => state.authLogout);
     const queryClient = useQueryClient();
 
-    const logoutMutation = useMutation({
+    return useMutation({
         mutationFn: logoutUser,
         onMutate: async () => {
             // cancel outgoing queries so they don't update after we clear state
@@ -61,17 +54,11 @@ export const useLogout = () => {
             Alert.alert('Logout failed', 'Please try again.');
         },
     })
-
-    return {
-        logout: logoutMutation.mutate,
-        isLoading: logoutMutation.isPending,
-        logoutAsync: logoutMutation.mutateAsync,
-    }
 }
 
 export const useRegister = () => {
     const authLogin = useAuthStore((state) => state.authLogin);
-    const registerMutation = useMutation({
+    return useMutation({
         mutationFn: registerUser,
         onSuccess: async (data) => {
             await saveTokens(data);
@@ -81,11 +68,4 @@ export const useRegister = () => {
             console.error('Login error raw:', err);
         },
     });
-
-    return {
-        register: registerMutation.mutate,
-        isLoading: registerMutation.isPending,
-        error: registerMutation.error,
-        isError: registerMutation.isError,
-    }
 }

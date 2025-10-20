@@ -29,8 +29,8 @@ const AuthForm = ({ signUp }: { signUp: boolean }) => {
   const [lastName, setLastname] = useState("");
 
   const [showPassword, setShowPassword] = useState(false);
-  const { login, error: loginError, isLoading: loginLoading, isError: loginIsError } = useLogin();
-  const { register, error: registerError, isLoading: registerLoading, isError: registerIsError } = useRegister();
+  const { mutate: login, error: loginError, isPending: loginLoading, isError: loginIsError } = useLogin();
+  const { mutate: register, error: registerError, isPending: registerLoading, isError: registerIsError } = useRegister();
 
   const handleLogin = () => {
     login({ email, password });
