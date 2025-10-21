@@ -4,21 +4,6 @@ import { Alert } from "react-native";
 import { clearTokens, saveTokens } from "../tokenStore";
 import { useAuthStore } from "../../../store/authStore";
 
-
-// export const useAuth = () => {
-//     const authLogin = useAuthStore((state) => state.authLogin);
-//     const checkAuthStatus = useAuthStore((state) => state.checkAuthStatus);
-
-//     //setOnLogOut that is called when a logout is triggered
-//     useEffect(() => {
-//         setOnLogout(() => logoutMutation.mutateAsync);
-//         return () => clearOnLogout();
-//     }, [logoutMutation]);
-
-//     return {
-//     }
-// }
-
 export const useLogin = () => {
     const authLogin = useAuthStore((state) => state.authLogin);
     return useMutation({

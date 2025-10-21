@@ -1,50 +1,29 @@
-import { View, Text } from 'react-native'
-import React, { useState } from 'react'
-import AppTextInput from '../../../components/ui/AppTextInput'
+import { View, Text } from 'react-native';
+import React from 'react';
+import AppTextInput from '../../../components/ui/AppTextInput';
 import AppPressable from '../../../components/ui/AppPressable';
 import AppSwitch from '../../../components/ui/AppSwitch';
-import { useLogin, useRegister } from '../hooks/useAuth';
-
-function getErrorMessages(error: any): string[] {
-  if (!error) return [];
-
-  const msg = error.message ?? '';
-
-  // If it's already an array (strings or objects)
-  if (Array.isArray(msg)) {
-    return msg;
-  }
-
-  // If message is a string
-  if (typeof msg === 'string') return [msg];
-
-  return [String(error)];
-}
+import { useAuthForm } from '../hooks/useAuthForm';
+import { getErrorMessages } from '../utils/errorUtils';
 
 const AuthForm = ({ signUp }: { signUp: boolean }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastname] = useState("");
-
-  const [showPassword, setShowPassword] = useState(false);
-  const { mutate: login, error: loginError, isPending: loginLoading, isError: loginIsError } = useLogin();
-  const { mutate: register, error: registerError, isPending: registerLoading, isError: registerIsError } = useRegister();
-
-  const handleLogin = () => {
-    login({ email, password });
-  };
-  const handleSignUp = () => {
-    register({ email, password, username, firstName, lastName });
-  }
+  const {
+    formData,
+    updateField,
+    showPassword,
+    toggleShowPassword,
+    handleSubmit,
+    isLoading,
+    error,
+    isError,
+  } = useAuthForm(signUp);
 
   return (
     <View>
       <AppTextInput
         placeholder="email"
-        value={email}
-        onChangeText={setEmail}
+        value={formData.email}
+        onChangeText={(value) => updateField('email', value)}
         keyboardType="email-address"
         textContentType="emailAddress"
         autoComplete="email"
@@ -53,8 +32,8 @@ const AuthForm = ({ signUp }: { signUp: boolean }) => {
       <AppTextInput
         placeholder="password"
         secure={!showPassword}
-        value={password}
-        onChangeText={setPassword}
+        value={formData.password}
+        onChangeText={(value) => updateField('password', value)}
         textContentType="password"
         autoComplete="password"
       />
@@ -63,62 +42,53 @@ const AuthForm = ({ signUp }: { signUp: boolean }) => {
         <>
           <AppTextInput
             placeholder="username"
-            value={username}
-            onChangeText={setUsername}
+            value={formData.username}
+            onChangeText={(value) => updateField('username', value)}
             textContentType="username"
             autoComplete="username"
           />
           <AppTextInput
             placeholder="First Name"
-            value={firstName}
-            onChangeText={setFirstName}
+            value={formData.firstName}
+            onChangeText={(value) => updateField('firstName', value)}
             textContentType="name"
             autoComplete="name"
           />
           <AppTextInput
             placeholder="Last Name"
-            value={lastName}
-            onChangeText={setLastname}
+            value={formData.lastName}
+            onChangeText={(value) => updateField('lastName', value)}
             textContentType="name"
             autoComplete="name"
           />
         </>
       )}
 
-      <AppSwitch value={showPassword}
-        onValueChange={() => setShowPassword(previousState => !previousState)}
-        rackColor={{ false: '#767577', true: '#81b0ff' }}
+      <AppSwitch
+        value={showPassword}
+        onValueChange={toggleShowPassword}
+        trackColor={{ false: '#767577', true: '#81b0ff' }}
         thumbColor={showPassword ? '#f5dd4b' : '#f4f3f4'}
-        ios_backgroundColor="#3e3e3e" />
+        ios_backgroundColor="#3e3e3e"
+      />
 
       <Text>Show password?</Text>
 
-      <AppPressable onPress={signUp ? handleSignUp : handleLogin} disabled={loginLoading || registerLoading}>
-        {signUp ? `${registerLoading ? 'Signing up...' : 'Sign up'}` : `${loginLoading ? 'Loging in...' : 'Log in'}`}
+      <AppPressable onPress={handleSubmit} disabled={isLoading}>
+        {signUp ? `${isLoading ? 'Signing up...' : 'Sign up'}` : `${isLoading ? 'Logging in...' : 'Log in'}`}
       </AppPressable>
 
-      {loginIsError && (
+      {isError && (
         <View style={{ marginTop: 10 }}>
-          {getErrorMessages(loginError).map((msg, i) => (
+          {getErrorMessages(error).map((msg, i) => (
             <Text key={i} style={{ color: 'red', marginBottom: 4 }}>
               {msg}
             </Text>
           ))}
         </View>
       )}
-
-      {registerIsError && (
-        <View style={{ marginTop: 10 }}>
-          {getErrorMessages(registerError).map((msg, i) => (
-            <Text key={i} style={{ color: 'red', marginBottom: 4 }}>
-              {msg}
-            </Text>
-          ))}
-        </View>
-      )}
-
     </View>
-  )
-}
+  );
+};
 
-export default AuthForm
+export default AuthForm;
