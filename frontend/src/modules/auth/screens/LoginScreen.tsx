@@ -6,8 +6,8 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
 
   return (
     <View>
-      <AuthForm signUp={false} />
       <Text>LoginScreen</Text>
+      <AuthForm signUp={false} />
       <Button onPress={() => navigation.navigate("SignUp")} title='Sign up' />
     </View>
   )

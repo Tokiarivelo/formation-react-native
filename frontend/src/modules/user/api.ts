@@ -1,16 +1,6 @@
 import { AxiosError } from "axios";
 import { apiClient } from "../../services/axiosInstance";
-import { User } from "../../types/api";
-import { UserRole } from "../../database/models/User";
-
-type UserParams = {
-    email: string,
-    username: string,
-    firstName: string,
-    lastName: string,
-    isActive: boolean,
-    role: UserRole,
-}
+import { User, UserParams } from "../../types/api";
 
 export const usersApi = {
     async getAll(): Promise<User[]> {
@@ -55,7 +45,7 @@ export const usersApi = {
         }
     },
 
-    async updateById(id: string, userParams: UserParams): Promise<User> {
+    async updateById({ id, userParams }: { id: string, userParams: UserParams }): Promise<User> {
         try {
             const response = await apiClient.put<User>(`/users/${id}`, userParams);
             return response.data;

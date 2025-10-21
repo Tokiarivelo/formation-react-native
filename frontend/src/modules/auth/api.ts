@@ -52,7 +52,7 @@ export const refreshAccessToken = async (): Promise<AuthResponse> => {
         });
 
         await saveTokens(response.data);
-        console.log("Successfully refreshed access token : ", response.data);
+        console.log("Successfully refreshed access token");
         return response.data;
     } catch (error) {
         // If refresh fails, tokens are fully expired/invalid. 

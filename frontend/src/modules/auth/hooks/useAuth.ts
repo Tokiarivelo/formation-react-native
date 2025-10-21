@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { loginUser, logoutUser, registerUser } from "../api";
-import { Alert } from "react-native";
 import { clearTokens, saveTokens } from "../tokenStore";
 import { useAuthStore } from "../../../store/authStore";
 
@@ -36,7 +35,6 @@ export const useLogout = () => {
         },
         onError: async (err: any) => {
             console.error('Logout failed', err);
-            Alert.alert('Logout failed', 'Please try again.');
         },
     })
 }

@@ -3,14 +3,16 @@ import { clearTokens, getAccessToken, getRefreshToken } from "../modules/auth/to
 import { jwtDecode } from "jwt-decode";
 import { refreshAccessToken } from "../modules/auth/api";
 import { User } from "../types/api";
-import { getUserMe } from "../modules/user/api";
+import { usersApi } from "../modules/user/api";
 
 type AuthState = {
     userState: User | null
     isLoggedIn: boolean,
     isLoading: boolean,
+
     authLogin: (data: User) => void,
     authLogout: () => void,
+    setUserState: (data: User) => void
     checkAuthStatus: () => Promise<void>
 }
 
@@ -22,13 +24,16 @@ export const useAuthStore = create<AuthState>((set) => ({
 
     //actions
     authLogin: (data: User) => {
-        set({ userState: data, isLoggedIn: true, isLoading: false })
+        set({ userState: data, isLoggedIn: true, isLoading: false });
     },
 
     authLogout: () => {
-        set({ isLoggedIn: false, userState: null, isLoading: false })
+        set({ isLoggedIn: false, userState: null, isLoading: false });
     },
 
+    setUserState: (data: User) => {
+        set({ userState: data });
+    },
 
     checkAuthStatus: async () => {
         try {
@@ -38,7 +43,7 @@ export const useAuthStore = create<AuthState>((set) => ({
             if (accessToken) {
                 const payload = jwtDecode<{ exp?: number }>(accessToken);
                 if (payload.exp && payload.exp > Math.floor(Date.now() / 1000) + 30) {
-                    const user = await getUserMe();
+                    const user = await usersApi.getMe();
                     set({ isLoggedIn: true, isLoading: false, userState: user });
                     return; // Token is valid, we're done
                 }
@@ -47,9 +52,7 @@ export const useAuthStore = create<AuthState>((set) => ({
             // If not, try to refresh
             const refreshToken = await getRefreshToken();
             if (refreshToken) {
-                console.log("refresh token exists");
                 const data = await refreshAccessToken();
-                console.log(data);
                 //update user state
                 set({ userState: data.user, isLoggedIn: true, isLoading: false });
                 return; // Refresh successful
