@@ -11,7 +11,7 @@ export enum TaskStatus {
     CANCELLED = 'CANCELLED',
 }
 
-export enum Priority {
+export enum TaskPriority {
     LOW = 'LOW',
     MEDIUM = 'MEDIUM',
     HIGH = 'HIGH',
@@ -29,7 +29,7 @@ export default class Task extends Model {
     @field('title') title!: string;
     @field('description') description!: string;
     @field('status') status!: TaskStatus;
-    @field('priority') priority!: Priority;
+    @field('priority') priority!: TaskPriority;
     @field('projectId') projectId!: string;
     @field('userId') userId!: string;
     @field('isDirty') isDirty!: boolean;

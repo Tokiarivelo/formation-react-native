@@ -1,3 +1,7 @@
+import { ProjectStatus } from "../database/models/Project";
+import { TaskPriority, TaskStatus } from "../database/models/Task";
+import { UserRole } from "../database/models/User";
+
 //AUTH RESPONSE TYPE    
 export interface AuthTokens {
     accessToken: string;
@@ -5,21 +9,13 @@ export interface AuthTokens {
 }
 
 export interface AuthResponse extends AuthTokens {
-    user: {
-        id: number;
-        email: string;
-        username: String,
-        firstName: String,
-        lastName: String,
-        isActive: boolean,
-        role: String,
-        createdAt: String,
-        updatedAt: String,
-    };
+    user: User
 }
 
 
-//USERS
+/**
+ * ********************** USERS TYPE *****************************
+ */
 export interface UserCredentials {
     email: string;
     password: string;
@@ -31,11 +27,112 @@ export interface UserCredentials {
 export interface User {
     id: number;
     email: string;
-    username: String,
-    firstName: String,
-    lastName: String,
+    username: string,
+    firstName: string,
+    lastName: string,
     isActive: boolean,
-    role: String,
-    createdAt: String,
-    updatedAt: String,
+    role: string,
+    createdAt: string,
+    updatedAt: string,
 }
+
+export type UserParams = {
+    email: string,
+    username: string,
+    firstName: string,
+    lastName: string,
+    isActive: boolean,
+    role: UserRole,
+}
+
+export type UserForeignData = {
+    id: string,
+    username: string,
+    email: string
+}
+
+/**
+ * ********************** PROJECTS TYPE *****************************
+ */
+export type ProjectParams = {
+    name: string,
+    description: string,
+    status: ProjectStatus,
+    startDate: string,
+    endDate: string
+}
+
+export interface ProjectData {
+    id: string,
+    name: string,
+    description: string,
+    status: ProjectStatus,
+    startDate: string,
+    endDate: string,
+    createdAt: string,
+    updated: string,
+    userId: string,
+    user: UserForeignData,
+}
+
+export interface ProjectResponseCount extends ProjectData {
+    _count: {
+        tasks: number,
+        attachments: number
+    }
+}
+
+export interface ProjectResponseDetail extends ProjectData {
+    tasks: TaskData[],
+    attachments: string[],
+}
+
+type ProjectForeignData = {
+    id: string,
+    name: string
+}
+
+
+/**
+ * ********************** TASKS TYPE *****************************
+ */
+
+export type TaskParams = {
+    title: string,
+    description: string,
+    status: TaskStatus,
+    priority: TaskPriority,
+    dueDate: string,
+    projectId?: string,
+}
+
+export interface TaskData {
+    id: string,
+    title: string,
+    description: string,
+    status: TaskStatus,
+    priority: TaskPriority,
+    dueDate: string,
+    createdAt: string,
+    updatedAt: string,
+    userId: string,
+    projectId: string,
+    user: UserForeignData,
+    project: ProjectForeignData,
+}
+
+export interface TaskResponseCount extends TaskData {
+    _count: {
+        attachments: number,
+    }
+}
+
+export interface TaskResponseDetail extends TaskData {
+    attachments: string[];
+}
+
+/**
+ * ********************** ATTACHMENTS TYPE *****************************
+ */
+//TODO
+
