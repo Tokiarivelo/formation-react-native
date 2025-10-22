@@ -6,6 +6,7 @@ export default appSchema({
         tableSchema({
             name: 'users',
             columns: [
+                { name: 'id', type: 'string', isIndexed: true },
                 { name: 'email', type: 'string', isIndexed: true },
                 { name: 'username', type: 'string', isIndexed: true },
                 { name: 'password', type: 'string' },
@@ -23,6 +24,7 @@ export default appSchema({
         tableSchema({
             name: 'projects',
             columns: [
+                { name: 'id', type: 'string', isIndexed: true },
                 { name: 'name', type: 'string' },
                 { name: 'description', type: 'string', isOptional: true },
                 { name: 'status', type: 'string' },
@@ -39,6 +41,7 @@ export default appSchema({
         tableSchema({
             name: 'tasks',
             columns: [
+                { name: 'id', type: 'string', isIndexed: true },
                 { name: 'title', type: 'string' },
                 { name: 'description', type: 'string', isOptional: true },
                 { name: 'status', type: 'string' },
@@ -56,6 +59,7 @@ export default appSchema({
         tableSchema({
             name: 'attachments',
             columns: [
+                { name: 'id', type: 'string', isIndexed: true },
                 { name: 'filename', type: 'string' },
                 { name: 'originalName', type: 'string' },
                 { name: 'mimeType', type: 'string' },

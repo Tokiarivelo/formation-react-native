@@ -84,7 +84,7 @@ export interface ProjectResponseCount extends ProjectData {
 
 export interface ProjectResponseDetail extends ProjectData {
     tasks: TaskData[],
-    attachments: string[],
+    attachments: Attachment[],
 }
 
 type ProjectForeignData = {
@@ -128,11 +128,31 @@ export interface TaskResponseCount extends TaskData {
 }
 
 export interface TaskResponseDetail extends TaskData {
-    attachments: string[];
+    attachments: Attachment[];
+}
+
+export type TaskForeignData = {
+    id: string,
+    title: string
 }
 
 /**
  * ********************** ATTACHMENTS TYPE *****************************
  */
-//TODO
+export interface Attachment {
+    id: string,
+    filename: string,
+    originalName: string,
+    mimeType: string,
+    size: number,
+    path: string,
+    createdAt: string,
+    updatedAt: string,
+    userId: string,
+    projectId: string,
+    taskId: string,
+    user: UserForeignData,
+    project: ProjectForeignData,
+    task: TaskForeignData
+}
 
