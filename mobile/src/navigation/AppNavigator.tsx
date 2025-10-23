@@ -1,24 +1,52 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { theme } from '../config/theme';
 import AuthNavigator from './AuthNavigator';
 import MainTabNavigator from './MainTabNavigator';
 import { RootStackParamList } from '../types/models';
+import { useAuth, queryClient } from '../store';
+import { secureTokenStorage } from '../libs/storage/secureStore';
+import DatabaseProvider from '../database/DatabaseProvider';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
-// Simulation d'un état d'authentification simple
-const useAuth = () => {
-  const [isAuthenticated] = React.useState(true); // Pour la démo, on commence non connecté
-  const [isLoading] = React.useState(false);
-  
-  return { isAuthenticated, isLoading };
-};
-
 const AppNavigator: React.FC = () => {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, setLoading } = useAuth();
+
+  // Vérifier l'authentification au démarrage
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        setLoading(true);
+        
+        // Vérifier si des tokens existent
+        const hasTokens = await secureTokenStorage.hasTokens();
+        
+        if (hasTokens) {
+          // Optionnel: vérifier la validité du token avec l'API
+          // const isValid = await authApi.verifyToken();
+          // if (!isValid) {
+          //   await secureTokenStorage.clearTokens();
+          // }
+        }
+      } catch (error) {
+        // Log en mode debug uniquement
+        if (__DEV__) {
+          // eslint-disable-next-line no-console
+          console.error('Erreur lors de la vérification de l\'authentification:', error);
+        }
+        // En cas d'erreur, déconnecter l'utilisateur
+        await secureTokenStorage.clearTokens();
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuthStatus();
+  }, [setLoading]);
 
   if (isLoading) {
     return (
@@ -29,29 +57,33 @@ const AppNavigator: React.FC = () => {
   }
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false,
-          cardStyle: { backgroundColor: theme.colors.background.secondary },
-        }}
-      >
-        {isAuthenticated ? (
-          <Stack.Screen name="Main" component={MainTabNavigator} />
-        ) : (
-          <Stack.Screen name="Auth" component={AuthNavigator} />
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <QueryClientProvider client={queryClient}>
+      <DatabaseProvider>
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+              cardStyle: { backgroundColor: theme.colors.background.secondary },
+            }}
+          >
+            {isAuthenticated ? (
+              <Stack.Screen name="Main" component={MainTabNavigator} />
+            ) : (
+              <Stack.Screen name="Auth" component={AuthNavigator} />
+            )}
+          </Stack.Navigator>
+        </NavigationContainer>
+      </DatabaseProvider>
+    </QueryClientProvider>
   );
 };
 
 const styles = StyleSheet.create({
   loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: theme.colors.background.secondary,
+    flex: 1,
+    justifyContent: 'center',
   },
 });
 

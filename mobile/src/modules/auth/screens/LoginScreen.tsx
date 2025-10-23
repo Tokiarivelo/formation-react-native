@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { theme } from '../../../config/theme';
+import { useLogin } from '../hooks/useAuth';
+import { useAuth } from '../../../store';
 
 const LoginScreen: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
+  
+  // Hooks d'authentification
+  const loginMutation = useLogin();
+  const { isLoading, error, clearError } = useAuth();
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -13,17 +18,30 @@ const LoginScreen: React.FC = () => {
       return;
     }
 
-    setLoading(true);
+    // Validation basique de l'email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      Alert.alert('Erreur', 'Veuillez entrer un email valide');
+      return;
+    }
+
     try {
-      // Simulation d'authentification
-      await new Promise<void>(resolve => setTimeout(resolve, 1000));
-      Alert.alert('Succès', 'Connexion réussie !');
+      await loginMutation.mutateAsync({ email, password });
+      // La navigation sera gérée automatiquement par AppNavigator
+      // grâce à la mise à jour du store Zustand
     } catch (error) {
-      Alert.alert('Erreur', 'Identifiants invalides');
-    } finally {
-      setLoading(false);
+      // L'erreur est déjà gérée par le hook useLogin
+      console.error('Erreur de connexion:', error);
     }
   };
+
+  // Afficher les erreurs du store
+  React.useEffect(() => {
+    if (error) {
+      Alert.alert('Erreur', error);
+      clearError();
+    }
+  }, [error, clearError]);
 
   return (
     <View style={styles.container}>
@@ -57,12 +75,12 @@ const LoginScreen: React.FC = () => {
         </View>
         
         <TouchableOpacity
-          style={[styles.button, loading && styles.buttonDisabled]}
+          style={[styles.button, (isLoading || loginMutation.isPending) && styles.buttonDisabled]}
           onPress={handleLogin}
-          disabled={loading}
+          disabled={isLoading || loginMutation.isPending}
         >
           <Text style={styles.buttonText}>
-            {loading ? 'Connexion...' : 'Se connecter'}
+            {(isLoading || loginMutation.isPending) ? 'Connexion...' : 'Se connecter'}
           </Text>
         </TouchableOpacity>
 

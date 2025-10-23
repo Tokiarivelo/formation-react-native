@@ -1,16 +1,61 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { theme } from '../config/theme';
+import { useAuth } from '../store';
+import { useLogout } from '../modules/auth/hooks/useAuth';
 
 const ProfileScreen: React.FC = () => {
+  const { user, isLoading } = useAuth();
+  const logoutMutation = useLogout();
+
+  const handleLogout = () => {
+    Alert.alert(
+      'Déconnexion',
+      'Êtes-vous sûr de vouloir vous déconnecter ?',
+      [
+        {
+          text: 'Annuler',
+          style: 'cancel',
+        },
+        {
+          text: 'Déconnexion',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await logoutMutation.mutateAsync();
+              // La navigation sera gérée automatiquement par AppNavigator
+            } catch (error) {
+              console.error('Erreur lors de la déconnexion:', error);
+              Alert.alert('Erreur', 'Impossible de se déconnecter');
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text style={styles.loadingText}>Chargement...</Text>
+      </View>
+    );
+  }
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <View style={styles.avatar}>
-          <Text style={styles.avatarText}>👤</Text>
+          <Text style={styles.avatarText}>
+            {user?.firstName?.charAt(0) || '👤'}
+          </Text>
         </View>
-        <Text style={styles.userName}>Utilisateur Demo</Text>
-        <Text style={styles.userEmail}>demo@formation.com</Text>
+        <Text style={styles.userName}>
+          {user ? `${user.firstName} ${user.lastName}` : 'Utilisateur'}
+        </Text>
+        <Text style={styles.userEmail}>
+          {user?.email || 'demo@formation.com'}
+        </Text>
       </View>
 
       <View style={styles.content}>
@@ -39,8 +84,14 @@ const ProfileScreen: React.FC = () => {
           <Text style={styles.menuItemArrow}>›</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.signOutButton}>
-          <Text style={styles.signOutText}>🚪 Se déconnecter</Text>
+        <TouchableOpacity 
+          style={[styles.signOutButton, logoutMutation.isPending && styles.buttonDisabled]}
+          onPress={handleLogout}
+          disabled={logoutMutation.isPending}
+        >
+          <Text style={styles.signOutText}>
+            {logoutMutation.isPending ? '🚪 Déconnexion...' : '🚪 Se déconnecter'}
+          </Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -113,6 +164,19 @@ const styles = StyleSheet.create({
     color: theme.colors.white,
     fontSize: theme.fontSizes.md,
     fontWeight: theme.fontWeights.semibold,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: theme.colors.background.secondary,
+  },
+  loadingText: {
+    fontSize: theme.fontSizes.md,
+    color: theme.colors.text.secondary,
+  },
+  buttonDisabled: {
+    opacity: 0.6,
   },
 });
 

@@ -1,3 +1,6 @@
+// Import NavigatorScreenParams from React Navigation
+import { NavigatorScreenParams } from '@react-navigation/native';
+
 // Navigation Types
 export type RootStackParamList = {
   Auth: NavigatorScreenParams<AuthStackParamList>;
@@ -28,9 +31,6 @@ export type TasksStackParamList = {
   TaskDetails: { taskId: string };
   TaskEdit: { taskId?: string };
 };
-
-// Import NavigatorScreenParams from React Navigation
-import { NavigatorScreenParams } from '@react-navigation/native';
 
 // Auth State Types
 export interface AuthState {
