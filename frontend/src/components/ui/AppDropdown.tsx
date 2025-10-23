@@ -7,7 +7,7 @@ type dropdownType = {
     value: string
 }
 
-type AppDropdown = {
+type AppDropdownType = {
     data: Array<dropdownType>,
     style?: StyleProp<ViewStyle>
     handleChange: (field: any, value: string) => void,
@@ -15,7 +15,7 @@ type AppDropdown = {
     value: string,
 }
 
-const AppDropdown = ({ data, style, handleChange, fieldName, value }: AppDropdown) => {
+const AppDropdown = ({ data, style, handleChange, fieldName, value }: AppDropdownType) => {
     return (
         <Dropdown style={[styles.dropdown, style]}
             data={data}

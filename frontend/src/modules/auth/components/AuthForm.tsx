@@ -4,7 +4,7 @@ import AppTextInput from '../../../components/ui/AppTextInput';
 import AppPressable from '../../../components/ui/AppPressable';
 import AppSwitch from '../../../components/ui/AppSwitch';
 import { useAuthForm } from '../hooks/useAuthForm';
-import { getErrorMessages } from '../utils/errorUtils';
+import { getErrorMessages } from '../../utils/errorUtils';
 import AppText from '../../../components/ui/AppText';
 
 const AuthForm = ({ signUp }: { signUp: boolean }) => {
