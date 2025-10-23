@@ -5,7 +5,7 @@
     "lib": ["ES2017", "DOM"],
     "jsx": "react-native",
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
+    "emitDecoratorMetadata": false,
     "strict": true,
     "skipLibCheck": true,
     "moduleResolution": "node",

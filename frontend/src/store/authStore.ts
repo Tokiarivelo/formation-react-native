@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { clearTokens, getAccessToken, getRefreshToken } from "../modules/auth/tokenStore";
+import { clearTokens, getAccessToken } from "../modules/auth/tokenStore";
 import { jwtDecode } from "jwt-decode";
 import { refreshAccessToken } from "../modules/auth/api";
 import { User } from "../types/api";
@@ -48,18 +48,12 @@ export const useAuthStore = create<AuthState>((set) => ({
                     return; // Token is valid, we're done
                 }
             }
-
             // If not, try to refresh
-            const refreshToken = await getRefreshToken();
-            if (refreshToken) {
-                const data = await refreshAccessToken();
-                //update user state
-                set({ userState: data.user, isLoggedIn: true, isLoading: false });
-                return; // Refresh successful
-            }
+            const data = await refreshAccessToken();
+            //update user state
+            set({ userState: data.user, isLoggedIn: true, isLoading: false });
+            return; // Refresh successful
 
-            // If all else fails, we are logged out
-            set({ isLoggedIn: false, isLoading: false });
         } catch {
             // Any error in the process means we are logged out
             await clearTokens();

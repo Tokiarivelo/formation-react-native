@@ -70,7 +70,7 @@ export interface ProjectData {
     startDate: string,
     endDate: string,
     createdAt: string,
-    updated: string,
+    updatedAt: string,
     userId: string,
     user: UserForeignData,
 }
