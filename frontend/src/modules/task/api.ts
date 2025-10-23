@@ -38,7 +38,7 @@ export const tasksApi = {
 
     async updateById({ id, taskParams }: { id: string, taskParams: TaskParams }): Promise<TaskResponseCount> {
         try {
-            const response = await apiClient.put<TaskResponseCount>(`/projects/${id}`, taskParams);
+            const response = await apiClient.put<TaskResponseCount>(`/tasks/${id}`, taskParams);
             return response.data;
         } catch (error) {
             const axiosError = error as AxiosError;

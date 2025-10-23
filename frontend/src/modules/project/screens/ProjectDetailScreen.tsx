@@ -4,8 +4,9 @@ import { useProjectById } from '../hooks/useProjects';
 import AppText from '../../../components/ui/AppText';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ProjectStackParamList } from '../../../types/navigation';
+import AppPressable from '../../../components/ui/AppPressable';
 
-const ProjectDetailScreen = ({ route }: NativeStackScreenProps<ProjectStackParamList, 'ProjectDetail'>) => {
+const ProjectDetailScreen = ({ navigation, route }: NativeStackScreenProps<ProjectStackParamList, 'ProjectDetail'>) => {
     const { projectId } = route.params;
     const { data: project } = useProjectById(projectId);
     return (
@@ -21,6 +22,9 @@ const ProjectDetailScreen = ({ route }: NativeStackScreenProps<ProjectStackParam
             <AppText>project userId: {project?.userId}</AppText>
             <AppText>project user email: {project?.user.email}</AppText>
             <AppText>project user name: {project?.user.username}</AppText>
+            <AppPressable onPress={() => navigation.navigate('Tasks', { screen: 'TaskCreate', params: { projectId: projectId } })}>
+                <AppText>Create Task</AppText>
+            </AppPressable>
         </View>
     )
 }

@@ -5,6 +5,7 @@ import ProjectDetailScreen from '../modules/project/screens/ProjectDetailScreen'
 import ProjectCreateScreen from '../modules/project/screens/ProjectCreateScreen';
 import ProjectUpdateScreen from '../modules/project/screens/ProjectUpdateScreen';
 import { ProjectStackParamList } from '../types/navigation';
+import TaskScreen from './TaskScreen';
 
 const Stack = createNativeStackNavigator<ProjectStackParamList>();
 
@@ -15,6 +16,7 @@ const ProjectScreen = () => {
             <Stack.Screen name="ProjectDetail" component={ProjectDetailScreen} />
             <Stack.Screen name="ProjectCreate" component={ProjectCreateScreen} />
             <Stack.Screen name="ProjectUpdate" component={ProjectUpdateScreen} />
+            <Stack.Screen name="Tasks" component={TaskScreen} />
         </Stack.Navigator>
     )
 }

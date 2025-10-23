@@ -1,15 +1,16 @@
 import { useState, useCallback } from 'react';
-import { useCreateProject, useUpdateProjectById } from './useProjects';
-import { ProjectStatus } from '../../../database/models/Project';
-import { ProjectResponseCount } from '../../../types/api';
+import { TaskResponseCount } from '../../../types/api';
+import { TaskPriority, TaskStatus } from '../../../database/models/Task';
+import { useCreateTask, useUpdateTaskById } from './useTasks';
 
-export const useProjectForm = (isUpdate: boolean, project: ProjectResponseCount | undefined) => {
+export const useTaskForm = (isUpdate: boolean, projectId: string, task: TaskResponseCount | undefined) => {
     const [formData, setFormData] = useState({
-        name: project?.name || "",
-        description: project?.description || "",
-        status: (project?.status || "ACTIVE") as ProjectStatus,
-        startDate: project?.startDate || "",
-        endDate: project?.endDate || "",
+        title: task?.title || "",
+        description: task?.description || "",
+        status: (task?.status || "TODO") as TaskStatus,
+        priority: (task?.priority || "LOW") as TaskPriority,
+        dueDate: task?.dueDate || "",
+        projectId: projectId,
     });
 
     const {
@@ -18,7 +19,7 @@ export const useProjectForm = (isUpdate: boolean, project: ProjectResponseCount 
         isPending: createLoading,
         isError: createIsError,
         isSuccess: createIsSuccess,
-    } = useCreateProject();
+    } = useCreateTask();
 
     const {
         mutate: update,
@@ -26,7 +27,7 @@ export const useProjectForm = (isUpdate: boolean, project: ProjectResponseCount 
         isPending: updateLoading,
         isError: updateIsError,
         isSuccess: updateIsSuccess,
-    } = useUpdateProjectById();
+    } = useUpdateTaskById();
 
     const updateField = useCallback((field: keyof typeof formData, value: string) => {
         setFormData(prev => ({ ...prev, [field]: value }));
@@ -35,12 +36,13 @@ export const useProjectForm = (isUpdate: boolean, project: ProjectResponseCount 
 
     const handleSubmit = useCallback(() => {
         if (isUpdate) {
-            update({ id: project!.id, projectParams: formData });
+            const { title, description, status, priority, dueDate } = formData;
+            update({ id: task!.id, taskParams: { title, description, status, priority, dueDate } });
         }
         else {
             create(formData);
         }
-    }, [formData, update, create, isUpdate, project]);
+    }, [formData, update, create, isUpdate, task]);
 
     const isLoading = createLoading || updateLoading;
     const error = isUpdate ? updateError : createError;

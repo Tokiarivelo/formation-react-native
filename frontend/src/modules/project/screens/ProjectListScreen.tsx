@@ -37,6 +37,9 @@ const ProjectListScreen = ({ navigation }: NativeStackScreenProps<ProjectStackPa
             </AppTouchableOpacity>
             <AppText>Project List: </AppText>
             <FlatList data={projects} renderItem={renderItem} />
+            <AppPressable onPress={() => navigation.navigate('Tasks', { screen: 'TaskList' })}>
+                <AppText>Go to all Tasks</AppText>
+            </AppPressable>
         </View>
     )
 }
