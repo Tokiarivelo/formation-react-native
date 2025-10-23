@@ -1,6 +1,6 @@
 import { View, FlatList } from 'react-native'
 import React, { useCallback } from 'react'
-import { useProjects } from '../hooks/useProjects';
+import { useDeleteProjectById, useProjects } from '../hooks/useProjects';
 import { ProjectResponseCount } from '../../../types/api';
 import AppPressable from '../../../components/ui/AppPressable';
 import AppText from '../../../components/ui/AppText';
@@ -11,6 +11,7 @@ import { ProjectStackParamList } from '../../../types/navigation';
 
 const ProjectListScreen = ({ navigation }: NativeStackScreenProps<ProjectStackParamList, 'ProjectList'>) => {
     const { data: projects = [] } = useProjects();
+    const { mutate: remove } = useDeleteProjectById();
     const renderItem = useCallback(({ item }: { item: ProjectResponseCount }) => {
         return (
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 10, borderBottomWidth: 1, borderColor: '#ccc' }}>
@@ -22,9 +23,12 @@ const ProjectListScreen = ({ navigation }: NativeStackScreenProps<ProjectStackPa
                 <AppTouchableOpacity onPress={() => navigation.navigate('ProjectUpdate', { project: item })} >
                     <AppText>Update</AppText>
                 </AppTouchableOpacity>
+                <AppTouchableOpacity style={{ backgroundColor: "red" }} onPress={() => remove(item.id)} >
+                    <AppText>Delete</AppText>
+                </AppTouchableOpacity>
             </View>
         )
-    }, [navigation]);
+    }, [navigation, remove]);
 
     return (
         <View>

@@ -40,7 +40,7 @@ export const useUpdateProjectById = () => {
     })
 }
 
-export const useDeleteUserById = () => {
+export const useDeleteProjectById = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
