@@ -1,10 +1,11 @@
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import React from 'react';
 import AppTextInput from '../../../components/ui/AppTextInput';
 import AppPressable from '../../../components/ui/AppPressable';
 import AppSwitch from '../../../components/ui/AppSwitch';
 import { useAuthForm } from '../hooks/useAuthForm';
 import { getErrorMessages } from '../utils/errorUtils';
+import AppText from '../../../components/ui/AppText';
 
 const AuthForm = ({ signUp }: { signUp: boolean }) => {
   const {
@@ -72,18 +73,20 @@ const AuthForm = ({ signUp }: { signUp: boolean }) => {
         ios_backgroundColor="#3e3e3e"
       />
 
-      <Text>Show password?</Text>
+      <AppText>Show password?</AppText>
 
       <AppPressable onPress={handleSubmit} disabled={isLoading}>
-        {signUp ? `${isLoading ? 'Signing up...' : 'Sign up'}` : `${isLoading ? 'Logging in...' : 'Log in'}`}
+        <AppText>
+          {signUp ? `${isLoading ? 'Signing up...' : 'Sign up'}` : `${isLoading ? 'Logging in...' : 'Log in'}`}
+        </AppText>
       </AppPressable>
 
       {isError && (
         <View style={{ marginTop: 10 }}>
           {getErrorMessages(error).map((msg, i) => (
-            <Text key={i} style={{ color: 'red', marginBottom: 4 }}>
+            <AppText key={i} style={{ color: 'red', marginBottom: 4 }}>
               {msg}
-            </Text>
+            </AppText>
           ))}
         </View>
       )}

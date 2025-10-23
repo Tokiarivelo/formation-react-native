@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
+import AppText from '../components/ui/AppText';
 
 const HomeScreen = () => {
     return (
         <View style={{ padding: 16 }}>
-            <Text style={{ fontWeight: 'bold' }}>HomeScreen</Text>
-            <Text style={{ fontWeight: 'bold' }}>Welcome</Text>
+            <AppText style={{ fontWeight: 'bold' }}>HomeScreen</AppText>
+            <AppText style={{ fontWeight: 'bold' }}>Welcome</AppText>
         </View>
     );
 };

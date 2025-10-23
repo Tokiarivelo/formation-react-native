@@ -1,4 +1,4 @@
-import { Pressable, PressableProps, StyleSheet, Text } from 'react-native'
+import { Pressable, PressableProps, StyleSheet } from 'react-native'
 import React, { ReactNode } from 'react'
 
 import { StyleProp, ViewStyle } from 'react-native'
@@ -6,14 +6,12 @@ import { StyleProp, ViewStyle } from 'react-native'
 type AppPressableType = PressableProps & {
   children: ReactNode,
   style?: StyleProp<ViewStyle>
-} 
+}
 
-const AppPressable = ({children, style, ...props} : AppPressableType) => {
+const AppPressable = ({ children, style, ...props }: AppPressableType) => {
   return (
     <Pressable style={[styles.pressable, style]} {...props}>
-      <Text>
-        {children}
-      </Text>
+      {children}
     </Pressable>
   )
 }
