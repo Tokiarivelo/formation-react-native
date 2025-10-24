@@ -4,10 +4,14 @@ import AppText from '../../../components/ui/AppText'
 import { TaskStackParamList } from '../../../types/navigation'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { useTaskById } from '../hooks/useTasks'
+import { useAttachments } from '../../attachment/hooks/useAttachments'
+import AttachmentFlatList from '../../attachment/components/AttachmentFlatList'
 
 const TaskDetailScreen = ({ route }: NativeStackScreenProps<TaskStackParamList, 'TaskDetail'>) => {
     const { taskId } = route.params;
     const { data: task } = useTaskById(taskId);
+    const { data: attachments } = useAttachments(task?.projectId || '', taskId);
+
     return (
         <View>
             <AppText>task id: {task?.id}</AppText>
@@ -20,6 +24,7 @@ const TaskDetailScreen = ({ route }: NativeStackScreenProps<TaskStackParamList, 
             <AppText>task updatedAt: {task?.updatedAt}</AppText>
             <AppText>task userId: {task?.userId}</AppText>
             <AppText>task projectId: {task?.projectId}</AppText>
+            <AttachmentFlatList attachments={attachments || []} />
         </View>
     )
 }

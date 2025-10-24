@@ -67,12 +67,16 @@ export const attachmentsApi = {
         }
     },
 
-    // async downloadById(id: string): Promise<void> {
-    //     try {
-    //         return await apiClient.get<void>(`/attachments/${id}/download`);
-    //     } catch (error) {
-    //         const axiosError = error as AxiosError;
-    //         throw axiosError.response?.data || { message: 'Fetch attachment failed.' };
-    //     }
-    // },
+    async downloadById(id: string): Promise<void> {
+        try {
+            const response = await apiClient.get(`/attachments/${id}/download`, {
+                responseType: 'blob',
+            });
+            console.log(response)
+            return
+        } catch (error) {
+            const axiosError = error as AxiosError;
+            throw axiosError.response?.data || { message: 'Fetch attachment failed.' };
+        }
+    },
 }
