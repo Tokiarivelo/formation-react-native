@@ -1,20 +1,33 @@
 import React from 'react'
 import AppTouchableOpacity from '../../../components/ui/AppTouchableOpacity'
 import AppText from '../../../components/ui/AppText'
-import { launchCamera } from 'react-native-image-picker'
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker'
 import { useCreateAttachment } from '../hooks/useAttachments'
 
-const AttachementPicker = () => {
+const AttachementPicker = ({ projectId = "", taskId = "", select = true }: { projectId?: string, taskId?: string, select: boolean }) => {
     const { mutateAsync: uploadAttachment } = useCreateAttachment()
     const handleImagePicker = async () => {
-        const response = await launchCamera({ mediaType: 'photo' });
-        console.log(response);
-        await uploadAttachment({ file: response.assets?.[0]! })
+        let response;
+        if (select) {
+            response = await launchImageLibrary({ mediaType: 'photo' });
+        }
+        else {
+            response = await launchCamera({ mediaType: 'photo' });
+        }
+        if (response.didCancel) {
+            console.log('User cancelled image picker');
+            return;
+        }
+        if (response.errorCode) {
+            console.error('ImagePicker Error: ', response.errorMessage);
+            return;
+        }
+        await uploadAttachment({ file: response.assets?.[0]!, projectId, taskId });
     }
 
     return (
         <AppTouchableOpacity onPress={handleImagePicker}>
-            <AppText>Pick Attachment</AppText>
+            <AppText>{select ? "Select Attachment" : "Take Photo"}</AppText>
         </AppTouchableOpacity>
     )
 }

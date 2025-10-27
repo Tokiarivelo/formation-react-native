@@ -6,6 +6,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { useTaskById } from '../hooks/useTasks'
 import { useAttachments } from '../../attachment/hooks/useAttachments'
 import AttachmentFlatList from '../../attachment/components/AttachmentFlatList'
+import AttachementPicker from '../../attachment/components/AttachementPicker'
 
 const TaskDetailScreen = ({ route }: NativeStackScreenProps<TaskStackParamList, 'TaskDetail'>) => {
     const { taskId } = route.params;
@@ -24,6 +25,8 @@ const TaskDetailScreen = ({ route }: NativeStackScreenProps<TaskStackParamList, 
             <AppText>task updatedAt: {task?.updatedAt}</AppText>
             <AppText>task userId: {task?.userId}</AppText>
             <AppText>task projectId: {task?.projectId}</AppText>
+            <AttachementPicker select={true} projectId={task?.projectId} taskId={taskId} />
+            <AttachementPicker select={false} projectId={task?.projectId} taskId={taskId} />
             <AttachmentFlatList attachments={attachments || []} />
         </View>
     )
