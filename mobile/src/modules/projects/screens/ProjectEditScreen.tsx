@@ -1,15 +1,13 @@
-import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { ProjectsStackParamList } from '../../../types/models';
-import { useCreateProject, useProject, useUpdateProject } from '../hooks/useProjects';
-import { ProjectStatus } from '../api';
-import { useForm, Controller } from 'react-hook-form';
+import React from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import { theme } from '../../../config/theme';
-import * as ImagePicker from 'react-native-image-picker';
-import { attachmentsApi } from '../../attachments/api';
+import { ProjectsStackParamList } from '../../../types/models';
+import { ProjectStatus } from '../api';
+import { useCreateProject, useProject, useUpdateProject } from '../hooks/useProjects';
 
 type Route = RouteProp<ProjectsStackParamList, 'ProjectEdit'>;
 type Nav = StackNavigationProp<ProjectsStackParamList, 'ProjectEdit'>;
@@ -228,8 +226,8 @@ const styles = StyleSheet.create({
   actions: { flexDirection: 'row', justifyContent: 'space-between', marginTop: theme.spacing.lg },
   primary: { backgroundColor: theme.colors.primary, paddingVertical: 12, paddingHorizontal: 16, borderRadius: theme.borderRadius.md },
   primaryText: { color: theme.colors.white, fontWeight: theme.fontWeights.semibold },
-  secondary: { backgroundColor: theme.colors.background.tertiary, paddingVertical: 12, paddingHorizontal: 16, borderRadius: theme.borderRadius.md },
-  secondaryText: { color: theme.colors.text.primary, fontWeight: theme.fontWeights.medium },
+//   secondary: { backgroundColor: theme.colors.background.tertiary, paddingVertical: 12, paddingHorizontal: 16, borderRadius: theme.borderRadius.md },
+//   secondaryText: { color: theme.colors.text.primary, fontWeight: theme.fontWeights.medium },
 });
 
 export default ProjectEditScreen;

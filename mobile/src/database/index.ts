@@ -22,8 +22,8 @@ const adapter = new SQLiteAdapter({
   // JSI (JavaScript Interface) pour de meilleures performances
   jsi: true,
   // Synchronisation en arrière-plan
-  onSetUpError: (error) => {
-    console.error('Erreur lors de l\'initialisation de WatermelonDB:', error);
+  onSetUpError: error => {
+    throw error;
   },
 });
 
@@ -90,7 +90,6 @@ export const checkDatabaseHealth = async () => {
       stats,
     };
   } catch (error) {
-    console.error('Erreur de santé de la base de données:', error);
     return {
       healthy: false,
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -99,4 +98,3 @@ export const checkDatabaseHealth = async () => {
 };
 
 export default database;
-

@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, Linking } from 'react-native';
-import { attachmentsApi, Attachment } from '../api';
+import { FlatList, Linking, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { theme } from '../../../config/theme';
+import { Attachment, attachmentsApi } from '../api';
 
 interface AttachmentListProps {
   projectId: string;

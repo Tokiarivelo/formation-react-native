@@ -1,19 +1,18 @@
-import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import { View, Text } from 'react-native';
+import React from 'react';
+import { Text, View } from 'react-native';
 import { theme } from '../config/theme';
 import { MainTabParamList, ProjectsStackParamList, TasksStackParamList } from '../types/models';
 
 // Import des écrans
 import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
-import SettingsScreen from '../screens/SettingsScreen';
 
 // Projects screens
-import ProjectsListScreen from '../modules/projects/screens/ProjectsListScreen';
 import ProjectDetailsScreen from '../modules/projects/screens/ProjectDetailsScreen';
 import ProjectEditScreen from '../modules/projects/screens/ProjectEditScreen';
+import ProjectsListScreen from '../modules/projects/screens/ProjectsListScreen';
 
 const TasksPlaceholderScreen = () => (
   <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.background.secondary }}>
@@ -71,7 +70,7 @@ const TasksStackNavigator = () => (
 );
 
 // Composant pour les icônes des tabs
-const TabIcon = ({ name, focused }: { name: string; focused: boolean }) => {
+const TabIcon = ({ name }: { name: string; focused: boolean }) => {
   const getIconText = () => {
     switch (name) {
       case 'Home':
