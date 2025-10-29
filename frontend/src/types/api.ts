@@ -25,7 +25,7 @@ export interface UserCredentials {
 }
 
 export interface User {
-    id: number;
+    id: string;
     email: string;
     username: string,
     firstName: string,

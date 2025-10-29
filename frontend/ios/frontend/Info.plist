@@ -46,6 +46,10 @@
 
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This app requires access to your microphone to record videos with sound.</string>
+
+	<!-- ADDED BIOMETRICS -->
+	<key>NSFaceIDUsageDescription</key>
+	<string>Utilisez Face ID pour vous connecter rapidement</string>
 	<!-- 👆 End of added keys -->
 
 	<key>UILaunchStoryboardName</key>

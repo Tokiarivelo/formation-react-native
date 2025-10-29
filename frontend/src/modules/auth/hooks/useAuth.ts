@@ -1,14 +1,17 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { loginUser, logoutUser, registerUser } from "../api";
 import { clearTokens, saveTokens } from "../tokenStore";
-import { useAuthStore } from "../../../store/authStore";
+import { clearCredentials, saveCredentials, useAuthStore } from "../../../store/authStore";
 
 export const useLogin = () => {
     const authLogin = useAuthStore((state) => state.authLogin);
+    const setBiometricEnabled = useAuthStore((state) => state.setBiometricEnabled);
     return useMutation({
         mutationFn: loginUser,
-        onSuccess: async (data) => {
+        onSuccess: async (data, variables) => {
             await saveTokens(data);
+            await saveCredentials({ username: variables.email, password: variables.password });
+            setBiometricEnabled(false);
             authLogin(data.user);
         },
         onError: (err: any) => {
@@ -27,6 +30,7 @@ export const useLogout = () => {
             // cancel outgoing queries so they don't update after we clear state
             await queryClient.cancelQueries();
             await clearTokens();
+            await clearCredentials();
             authLogout();
         },
         onSettled: () => {
@@ -41,11 +45,14 @@ export const useLogout = () => {
 
 export const useRegister = () => {
     const authLogin = useAuthStore((state) => state.authLogin);
+    const setBiometricEnabled = useAuthStore((state) => state.setBiometricEnabled);
     return useMutation({
         mutationFn: registerUser,
-        onSuccess: async (data) => {
+        onSuccess: async (data, variables) => {
             await saveTokens(data);
+            await saveCredentials({ username: variables.email, password: variables.password });
             authLogin(data.user);
+            setBiometricEnabled(false);
         },
         onError: (err: any) => {
             console.error('Login error raw:', err);

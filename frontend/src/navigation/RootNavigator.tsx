@@ -13,8 +13,8 @@ const RootNavigator = () => {
     const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
     const isLoading = useAuthStore((state) => state.isLoading);
     const checkAuthStatus = useAuthStore((state) => state.checkAuthStatus);
-
     const { mutate: logout } = useLogout();
+
     //setOnLogOut that is called when a logout is triggered
     useEffect(() => {
         setOnLogout(() => logout);
