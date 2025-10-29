@@ -14,7 +14,7 @@ interface EnvConfig {
 const getEnvConfig = (): EnvConfig => {
   // En développement, utilise les valeurs par défaut
   const defaultConfig: EnvConfig = {
-    API_URL: 'http://localhost:3000/api',
+    API_URL: 'http://192.168.88.250:3000',
     JWT_KEY: 'auth_token',
     REFRESH_TOKEN_KEY: 'refresh_token',
     APP_NAME: 'FormationReactNative',
@@ -26,7 +26,8 @@ const getEnvConfig = (): EnvConfig => {
     return {
       API_URL: process.env.API_URL || defaultConfig.API_URL,
       JWT_KEY: process.env.JWT_KEY || defaultConfig.JWT_KEY,
-      REFRESH_TOKEN_KEY: process.env.REFRESH_TOKEN_KEY || defaultConfig.REFRESH_TOKEN_KEY,
+      REFRESH_TOKEN_KEY:
+        process.env.REFRESH_TOKEN_KEY || defaultConfig.REFRESH_TOKEN_KEY,
       APP_NAME: process.env.APP_NAME || defaultConfig.APP_NAME,
       DEBUG_MODE: process.env.DEBUG_MODE === 'true',
     };

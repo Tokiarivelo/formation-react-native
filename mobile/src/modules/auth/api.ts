@@ -13,6 +13,7 @@ export interface LoginRequest {
 
 export interface SignupRequest {
   email: string;
+  username: string;
   password: string;
   firstName: string;
   lastName: string;
@@ -61,7 +62,10 @@ export const authApi = {
    * Connexion utilisateur
    */
   async login(credentials: LoginRequest): Promise<AuthResponse> {
-    const { data } = await axiosInstance.post<AuthResponse>('/auth/login', credentials);
+    const { data } = await axiosInstance.post<AuthResponse>(
+      '/auth/login',
+      credentials
+    );
     return data;
   },
 
@@ -69,7 +73,10 @@ export const authApi = {
    * Inscription utilisateur
    */
   async signup(userData: SignupRequest): Promise<AuthResponse> {
-    const { data } = await axiosInstance.post<AuthResponse>('/auth/signup', userData);
+    const { data } = await axiosInstance.post<AuthResponse>(
+      '/auth/register',
+      userData
+    );
     return data;
   },
 
@@ -85,9 +92,12 @@ export const authApi = {
    * Rafraîchir le token d'accès
    */
   async refreshToken(refreshToken: string): Promise<RefreshTokenResponse> {
-    const { data } = await axiosInstance.post<RefreshTokenResponse>('/auth/refresh', {
-      refreshToken,
-    });
+    const { data } = await axiosInstance.post<RefreshTokenResponse>(
+      '/auth/refresh',
+      {
+        refreshToken,
+      }
+    );
     return data;
   },
 
@@ -95,15 +105,23 @@ export const authApi = {
    * Demander un reset de mot de passe
    */
   async forgotPassword(email: ForgotPasswordRequest): Promise<MessageResponse> {
-    const { data } = await axiosInstance.post<MessageResponse>('/auth/forgot-password', email);
+    const { data } = await axiosInstance.post<MessageResponse>(
+      '/auth/forgot-password',
+      email
+    );
     return data;
   },
 
   /**
    * Réinitialiser le mot de passe
    */
-  async resetPassword(resetData: ResetPasswordRequest): Promise<MessageResponse> {
-    const { data } = await axiosInstance.post<MessageResponse>('/auth/reset-password', resetData);
+  async resetPassword(
+    resetData: ResetPasswordRequest
+  ): Promise<MessageResponse> {
+    const { data } = await axiosInstance.post<MessageResponse>(
+      '/auth/reset-password',
+      resetData
+    );
     return data;
   },
 
@@ -111,7 +129,9 @@ export const authApi = {
    * Vérifier la validité du token
    */
   async verifyToken(): Promise<{ valid: boolean; user?: any }> {
-    const { data } = await axiosInstance.get<{ valid: boolean; user?: any }>('/auth/verify');
+    const { data } = await axiosInstance.get<{ valid: boolean; user?: any }>(
+      '/auth/verify'
+    );
     return data;
   },
 
@@ -119,26 +139,38 @@ export const authApi = {
    * Obtenir le profil utilisateur actuel
    */
   async getProfile(): Promise<AuthResponse['user']> {
-    const { data } = await axiosInstance.get<AuthResponse['user']>('/auth/profile');
+    const { data } =
+      await axiosInstance.get<AuthResponse['user']>('/auth/profile');
     return data;
   },
 
   /**
    * Mettre à jour le profil utilisateur
    */
-  async updateProfile(updates: Partial<AuthResponse['user']>): Promise<AuthResponse['user']> {
-    const { data } = await axiosInstance.patch<AuthResponse['user']>('/auth/profile', updates);
+  async updateProfile(
+    updates: Partial<AuthResponse['user']>
+  ): Promise<AuthResponse['user']> {
+    const { data } = await axiosInstance.patch<AuthResponse['user']>(
+      '/auth/profile',
+      updates
+    );
     return data;
   },
 
   /**
    * Changer le mot de passe
    */
-  async changePassword(currentPassword: string, newPassword: string): Promise<MessageResponse> {
-    const { data } = await axiosInstance.patch<MessageResponse>('/auth/change-password', {
-      currentPassword,
-      newPassword,
-    });
+  async changePassword(
+    currentPassword: string,
+    newPassword: string
+  ): Promise<MessageResponse> {
+    const { data } = await axiosInstance.patch<MessageResponse>(
+      '/auth/change-password',
+      {
+        currentPassword,
+        newPassword,
+      }
+    );
     return data;
   },
 
@@ -146,10 +178,10 @@ export const authApi = {
    * Supprimer le compte utilisateur
    */
   async deleteAccount(): Promise<MessageResponse> {
-    const { data } = await axiosInstance.delete<MessageResponse>('/auth/account');
+    const { data } =
+      await axiosInstance.delete<MessageResponse>('/auth/account');
     return data;
   },
 };
 
 export default authApi;
-
