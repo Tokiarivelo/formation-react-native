@@ -10,15 +10,10 @@ import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
-// Placeholder screens pour les modules à venir
-const ProjectsPlaceholderScreen = () => (
-  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.background.secondary }}>
-    <Text style={{ fontSize: theme.fontSizes.xl, color: theme.colors.text.primary }}>📁 Projets</Text>
-    <Text style={{ fontSize: theme.fontSizes.md, color: theme.colors.text.secondary, marginTop: theme.spacing.md }}>
-      Module en cours de développement
-    </Text>
-  </View>
-);
+// Projects screens
+import ProjectsListScreen from '../modules/projects/screens/ProjectsListScreen';
+import ProjectDetailsScreen from '../modules/projects/screens/ProjectDetailsScreen';
+import ProjectEditScreen from '../modules/projects/screens/ProjectEditScreen';
 
 const TasksPlaceholderScreen = () => (
   <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.background.secondary }}>
@@ -42,21 +37,9 @@ const ProjectsStackNavigator = () => (
       headerTitleStyle: { fontWeight: theme.fontWeights.semibold },
     }}
   >
-    <ProjectsStack.Screen 
-      name="ProjectsList" 
-      component={ProjectsPlaceholderScreen}
-      options={{ title: 'Mes Projets' }}
-    />
-    <ProjectsStack.Screen 
-      name="ProjectDetails" 
-      component={ProjectsPlaceholderScreen}
-      options={{ title: 'Détails du Projet' }}
-    />
-    <ProjectsStack.Screen 
-      name="ProjectEdit" 
-      component={ProjectsPlaceholderScreen}
-      options={{ title: 'Modifier le Projet' }}
-    />
+    <ProjectsStack.Screen name="ProjectsList" component={ProjectsListScreen} options={{ title: 'Mes Projets' }} />
+    <ProjectsStack.Screen name="ProjectDetails" component={ProjectDetailsScreen} options={{ title: 'Détails du Projet' }} />
+    <ProjectsStack.Screen name="ProjectEdit" component={ProjectEditScreen} options={{ title: 'Projet' }} />
   </ProjectsStack.Navigator>
 );
 
@@ -105,16 +88,9 @@ const TabIcon = ({ name, focused }: { name: string; focused: boolean }) => {
   };
 
   return (
-    <View style={{ alignItems: 'center' }}>
-      <Text style={{ fontSize: 24, marginBottom: 2 }}>
+    <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+      <Text style={{ fontSize: 22, lineHeight: 26 }}>
         {getIconText()}
-      </Text>
-      <Text style={{ 
-        fontSize: 10, 
-        color: focused ? theme.colors.primary : theme.colors.gray[500],
-        fontWeight: focused ? theme.fontWeights.semibold : theme.fontWeights.normal
-      }}>
-        {name}
       </Text>
     </View>
   );
@@ -134,9 +110,8 @@ const MainTabNavigator: React.FC = () => {
           backgroundColor: theme.colors.white,
           borderTopWidth: 1,
           borderTopColor: theme.colors.border.light,
-          height: 60,
-          paddingBottom: 5,
-          paddingTop: 5,
+          height: 64,
+          paddingVertical: 8,
           ...theme.shadows.small,
         },
         tabBarLabelStyle: {

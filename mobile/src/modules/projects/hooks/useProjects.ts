@@ -4,10 +4,9 @@
  */
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { database, Project } from '../../../database';
 import { useAuth } from '../../../store';
-import { createProjectWithOutbox, updateTaskWithOutbox } from '../../../sync/outbox';
 import { syncManager } from '../../../sync/syncManager';
+import { projectsApi, ProjectResponse, ProjectStatus, ProjectRequest } from '../api';
 
 // Clés de requête
 export const projectKeys = {
@@ -27,19 +26,10 @@ export const useProjects = (filters?: { status?: string; userId?: string }) => {
   return useQuery({
     queryKey: projectKeys.list(filters),
     queryFn: async () => {
-      let query = database.collections.get<Project>('projects').query();
-
-      // Filtrer par utilisateur si pas spécifié
-      if (filters?.userId || user?.id) {
-        query = query.where('user_id', filters?.userId || user!.id);
-      }
-
-      // Filtrer par statut
-      if (filters?.status) {
-        query = query.where('status', filters.status);
-      }
-
-      return query.fetch();
+      const params: { status?: ProjectStatus; userId?: string } = {};
+      if (filters?.status) params.status = filters.status as ProjectStatus;
+      if (filters?.userId || user?.id) params.userId = filters?.userId || user!.id;
+      return projectsApi.list(params);
     },
     enabled: !!user,
     staleTime: 2 * 60 * 1000, // 2 minutes
@@ -55,8 +45,7 @@ export const useProject = (projectId: string) => {
   return useQuery({
     queryKey: projectKeys.detail(projectId),
     queryFn: async () => {
-      const project = await database.collections.get<Project>('projects').find(projectId);
-      return project;
+      return projectsApi.getById(projectId);
     },
     enabled: !!user && !!projectId,
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -71,23 +60,9 @@ export const useCreateProject = () => {
   const { user } = useAuth();
 
   return useMutation({
-    mutationFn: async (projectData: {
-      name: string;
-      description?: string;
-      status?: string;
-      startDate?: Date;
-      endDate?: Date;
-    }) => {
+    mutationFn: async (projectData: ProjectRequest) => {
       if (!user) throw new Error('Utilisateur non connecté');
-
-      const data = {
-        ...projectData,
-        userId: user.id,
-      };
-
-      // Créer avec outbox pour la synchronisation
-      const project = await createProjectWithOutbox(data);
-      return project;
+      return projectsApi.create(projectData);
     },
     onSuccess: () => {
       // Invalider les requêtes de projets
@@ -108,20 +83,9 @@ export const useUpdateProject = () => {
       updates,
     }: {
       projectId: string;
-      updates: {
-        name?: string;
-        description?: string;
-        status?: string;
-        startDate?: Date;
-        endDate?: Date;
-      };
+      updates: Partial<ProjectRequest>;
     }) => {
-      const project = await database.collections.get<Project>('projects').find(projectId);
-      
-      // Mettre à jour localement avec outbox
-      await updateTaskWithOutbox(projectId, updates);
-      
-      return project;
+      return projectsApi.update(projectId, updates);
     },
     onSuccess: (_, { projectId }) => {
       // Invalider les requêtes de ce projet et la liste
@@ -139,12 +103,7 @@ export const useDeleteProject = () => {
 
   return useMutation({
     mutationFn: async (projectId: string) => {
-      const project = await database.collections.get<Project>('projects').find(projectId);
-      
-      // Supprimer avec outbox
-      await updateTaskWithOutbox(projectId, {});
-      
-      return project;
+      await projectsApi.remove(projectId);
     },
     onSuccess: () => {
       // Invalider toutes les requêtes de projets
@@ -165,14 +124,9 @@ export const useChangeProjectStatus = () => {
       status,
     }: {
       projectId: string;
-      status: 'ACTIVE' | 'COMPLETED' | 'CANCELLED' | 'ON_HOLD';
+      status: ProjectStatus;
     }) => {
-      const project = await database.collections.get<Project>('projects').find(projectId);
-      
-      // Mettre à jour avec outbox
-      await updateTaskWithOutbox(projectId, { status });
-      
-      return project;
+      return projectsApi.update(projectId, { status });
     },
     onSuccess: (_, { projectId }) => {
       queryClient.invalidateQueries({ queryKey: projectKeys.detail(projectId) });
@@ -192,18 +146,13 @@ export const useProjectStats = () => {
     queryFn: async () => {
       if (!user) return null;
 
-      const projects = await database.collections
-        .get<Project>('projects')
-        .query()
-        .where('user_id', user.id)
-        .fetch();
-
+      const projects: ProjectResponse[] = await projectsApi.list({ userId: user.id });
       const stats = {
         total: projects.length,
-        active: projects.filter(p => p.isActive).length,
-        completed: projects.filter(p => p.isCompleted).length,
-        cancelled: projects.filter(p => p.isCancelled).length,
-        onHold: projects.filter(p => p.isOnHold).length,
+        active: projects.filter((p) => p.status === 'ACTIVE').length,
+        completed: projects.filter((p) => p.status === 'COMPLETED').length,
+        cancelled: projects.filter((p) => p.status === 'CANCELLED').length,
+        onHold: projects.filter((p) => p.status === 'ON_HOLD').length,
       };
 
       return stats;

@@ -17,15 +17,7 @@ import User from './models/User';
 // Configuration de l'adaptateur SQLite
 const adapter = new SQLiteAdapter({
   schema,
-  // Migrations (pour les futures versions)
-  migrations: {
-    // migrations: {
-    //   1: (oldSchema, newSchema) => {
-    //     // Migration pour la version 1
-    //   },
-    // },
-  },
-  // Configuration de la base de données
+  // Ajoutez l'option `migrations` plus tard via `schemaMigrations(...)` quand vous aurez de vraies migrations
   dbName: 'FormationReactNative',
   // JSI (JavaScript Interface) pour de meilleures performances
   jsi: true,
@@ -46,7 +38,7 @@ export const database = new Database({
     // Outbox,
   ],
   // Configuration des actions
-  actionsEnabled: true,
+  // actionsEnabled: true,
 });
 
 // Export des modèles pour faciliter l'import
