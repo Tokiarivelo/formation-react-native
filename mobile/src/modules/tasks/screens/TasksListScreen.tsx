@@ -17,12 +17,18 @@ import { useTasks, useCreateTask, useTaskStats } from '../hooks/useTasks';
 import { useSyncStatus } from '../../projects/hooks/useProjects';
 import TaskItem from '../components/TaskItem';
 import { theme } from '../../../config/theme';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { TasksStackParamList } from '../../../types/models';
 
 interface TasksListScreenProps {
   projectId?: string;
 }
 
+type Nav = StackNavigationProp<TasksStackParamList, 'TasksList'>;
+
 const TasksListScreen: React.FC<TasksListScreenProps> = ({ projectId }) => {
+  const navigation = useNavigation<Nav>();
   const [filters, setFilters] = useState({
     projectId,
     status: undefined as string | undefined,
@@ -38,26 +44,7 @@ const TasksListScreen: React.FC<TasksListScreenProps> = ({ projectId }) => {
   const createTaskMutation = useCreateTask();
 
   const handleCreateTask = () => {
-    Alert.prompt(
-      'Nouvelle tâche',
-      'Entrez le titre de la tâche',
-      [
-        { text: 'Annuler', style: 'cancel' },
-        {
-          text: 'Créer',
-          onPress: (title) => {
-            if (title && projectId) {
-              createTaskMutation.mutate({
-                title,
-                projectId,
-                status: 'TODO',
-                priority: 'MEDIUM',
-              });
-            }
-          },
-        },
-      ]
-    );
+    navigation.navigate('TaskEdit', { taskId: undefined as any });
   };
 
   const handleFilterChange = (filterType: 'status' | 'priority', value: string | undefined) => {
@@ -68,13 +55,19 @@ const TasksListScreen: React.FC<TasksListScreenProps> = ({ projectId }) => {
   };
 
   const renderTask = ({ item: task }: { item: any }) => (
-    <TaskItem
-      task={task}
-      onPress={() => {
-        // Navigation vers les détails de la tâche
-        console.log('Navigation vers tâche:', task.id);
-      }}
-    />
+    <TouchableOpacity
+      style={{ backgroundColor: theme.colors.white, borderRadius: theme.borderRadius.md, padding: theme.spacing.md, marginBottom: theme.spacing.sm, ...theme.shadows.small }}
+      onPress={() => navigation.navigate('TaskDetails', { taskId: task.id })}
+    >
+      <Text style={{ color: theme.colors.text.primary, fontWeight: theme.fontWeights.semibold }}>{task.title}</Text>
+      {task.description ? (
+        <Text style={{ color: theme.colors.text.secondary, marginTop: 4 }} numberOfLines={2}>{task.description}</Text>
+      ) : null}
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 }}>
+        <Text style={{ color: theme.colors.text.secondary }}>Statut: {task.status}</Text>
+        <Text style={{ color: theme.colors.text.secondary }}>Priorité: {task.priority}</Text>
+      </View>
+    </TouchableOpacity>
   );
 
   const renderHeader = () => (

@@ -14,14 +14,9 @@ import ProjectDetailsScreen from '../modules/projects/screens/ProjectDetailsScre
 import ProjectEditScreen from '../modules/projects/screens/ProjectEditScreen';
 import ProjectsListScreen from '../modules/projects/screens/ProjectsListScreen';
 
-const TasksPlaceholderScreen = () => (
-  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.background.secondary }}>
-    <Text style={{ fontSize: theme.fontSizes.xl, color: theme.colors.text.primary }}>✅ Tâches</Text>
-    <Text style={{ fontSize: theme.fontSizes.md, color: theme.colors.text.secondary, marginTop: theme.spacing.md }}>
-      Module en cours de développement
-    </Text>
-  </View>
-);
+import TasksListScreen from '../modules/tasks/screens/TasksListScreen';
+import TaskDetailsScreen from '../modules/tasks/screens/TaskDetailsScreen';
+import TaskEditScreen from '../modules/tasks/screens/TaskEditScreen';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 const ProjectsStack = createStackNavigator<ProjectsStackParamList>();
@@ -51,21 +46,9 @@ const TasksStackNavigator = () => (
       headerTitleStyle: { fontWeight: theme.fontWeights.semibold },
     }}
   >
-    <TasksStack.Screen 
-      name="TasksList" 
-      component={TasksPlaceholderScreen}
-      options={{ title: 'Mes Tâches' }}
-    />
-    <TasksStack.Screen 
-      name="TaskDetails" 
-      component={TasksPlaceholderScreen}
-      options={{ title: 'Détails de la Tâche' }}
-    />
-    <TasksStack.Screen 
-      name="TaskEdit" 
-      component={TasksPlaceholderScreen}
-      options={{ title: 'Modifier la Tâche' }}
-    />
+    <TasksStack.Screen name="TasksList" component={TasksListScreen} options={{ title: 'Mes Tâches' }} />
+    <TasksStack.Screen name="TaskDetails" component={TaskDetailsScreen} options={{ title: 'Détails de la Tâche' }} />
+    <TasksStack.Screen name="TaskEdit" component={TaskEditScreen} options={{ title: 'Tâche' }} />
   </TasksStack.Navigator>
 );
 

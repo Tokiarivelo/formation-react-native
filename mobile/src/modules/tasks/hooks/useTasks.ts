@@ -4,10 +4,9 @@
  */
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { database, Task } from '../../../database';
 import { useAuth } from '../../../store';
-import { createTaskWithOutbox, updateTaskWithOutbox, deleteTaskWithOutbox } from '../../../sync/outbox';
 import { syncManager } from '../../../sync/syncManager';
+import { tasksApi, TaskRequest, TaskResponse, TaskPriority, TaskStatus } from '../api';
 
 // Clés de requête
 export const taskKeys = {
@@ -33,29 +32,12 @@ export const useTasks = (filters?: {
   return useQuery({
     queryKey: taskKeys.list(filters),
     queryFn: async () => {
-      let query = database.collections.get<Task>('tasks').query();
-
-      // Filtrer par utilisateur si pas spécifié
-      if (filters?.userId || user?.id) {
-        query = query.where('user_id', filters?.userId || user!.id);
-      }
-
-      // Filtrer par projet
-      if (filters?.projectId) {
-        query = query.where('project_id', filters.projectId);
-      }
-
-      // Filtrer par statut
-      if (filters?.status) {
-        query = query.where('status', filters.status);
-      }
-
-      // Filtrer par priorité
-      if (filters?.priority) {
-        query = query.where('priority', filters.priority);
-      }
-
-      return query.fetch();
+      const params: { projectId?: string; status?: TaskStatus; priority?: TaskPriority; userId?: string } = {};
+      if (filters?.projectId) params.projectId = filters.projectId;
+      if (filters?.status) params.status = filters.status as TaskStatus;
+      if (filters?.priority) params.priority = filters.priority as TaskPriority;
+      if (filters?.userId || user?.id) params.userId = filters?.userId || user!.id;
+      return tasksApi.list(params);
     },
     enabled: !!user,
     staleTime: 2 * 60 * 1000, // 2 minutes
@@ -71,15 +53,7 @@ export const useTasksByProject = (projectId: string) => {
   return useQuery({
     queryKey: taskKeys.byProject(projectId),
     queryFn: async () => {
-      let query = database.collections.get<Task>('tasks').query();
-
-      if (user?.id) {
-        query = query.where('user_id', user.id);
-      }
-
-      query = query.where('project_id', projectId);
-
-      return query.fetch();
+      return tasksApi.list({ projectId, userId: user?.id });
     },
     enabled: !!user && !!projectId,
     staleTime: 2 * 60 * 1000, // 2 minutes
@@ -95,8 +69,7 @@ export const useTask = (taskId: string) => {
   return useQuery({
     queryKey: taskKeys.detail(taskId),
     queryFn: async () => {
-      const task = await database.collections.get<Task>('tasks').find(taskId);
-      return task;
+      return tasksApi.getById(taskId);
     },
     enabled: !!user && !!taskId,
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -111,24 +84,9 @@ export const useCreateTask = () => {
   const { user } = useAuth();
 
   return useMutation({
-    mutationFn: async (taskData: {
-      title: string;
-      description?: string;
-      status?: string;
-      priority?: string;
-      dueDate?: Date;
-      projectId: string;
-    }) => {
+    mutationFn: async (taskData: TaskRequest) => {
       if (!user) throw new Error('Utilisateur non connecté');
-
-      const data = {
-        ...taskData,
-        userId: user.id,
-      };
-
-      // Créer avec outbox pour la synchronisation
-      const task = await createTaskWithOutbox(data);
-      return task;
+      return tasksApi.create(taskData);
     },
     onSuccess: (_, variables) => {
       // Invalider les requêtes de tâches
@@ -150,20 +108,9 @@ export const useUpdateTask = () => {
       updates,
     }: {
       taskId: string;
-      updates: {
-        title?: string;
-        description?: string;
-        status?: string;
-        priority?: string;
-        dueDate?: Date;
-      };
+      updates: Partial<TaskRequest>;
     }) => {
-      const task = await database.collections.get<Task>('tasks').find(taskId);
-      
-      // Mettre à jour localement avec outbox
-      await updateTaskWithOutbox(taskId, updates);
-      
-      return task;
+      return tasksApi.update(taskId, updates);
     },
     onSuccess: (_, { taskId }) => {
       // Invalider les requêtes de cette tâche et la liste
@@ -181,12 +128,7 @@ export const useDeleteTask = () => {
 
   return useMutation({
     mutationFn: async (taskId: string) => {
-      const task = await database.collections.get<Task>('tasks').find(taskId);
-      
-      // Supprimer avec outbox
-      await deleteTaskWithOutbox(taskId);
-      
-      return task;
+      await tasksApi.remove(taskId);
     },
     onSuccess: () => {
       // Invalider toutes les requêtes de tâches
@@ -203,12 +145,9 @@ export const useToggleTaskStatus = () => {
 
   return useMutation({
     mutationFn: async (taskId: string) => {
-      const task = await database.collections.get<Task>('tasks').find(taskId);
-      
-      // Basculer le statut avec outbox
-      await updateTaskWithOutbox(taskId, {});
-      
-      return task;
+      const task = await tasksApi.getById(taskId);
+      const next = task.status === 'DONE' ? 'TODO' : 'DONE';
+      return tasksApi.update(taskId, { status: next });
     },
     onSuccess: (_, taskId) => {
       queryClient.invalidateQueries({ queryKey: taskKeys.detail(taskId) });
@@ -225,12 +164,7 @@ export const useMarkTaskAsDone = () => {
 
   return useMutation({
     mutationFn: async (taskId: string) => {
-      const task = await database.collections.get<Task>('tasks').find(taskId);
-      
-      // Marquer comme terminée avec outbox
-      await updateTaskWithOutbox(taskId, { status: 'DONE' });
-      
-      return task;
+      return tasksApi.update(taskId, { status: 'DONE' });
     },
     onSuccess: (_, taskId) => {
       queryClient.invalidateQueries({ queryKey: taskKeys.detail(taskId) });
@@ -251,14 +185,9 @@ export const useChangeTaskPriority = () => {
       priority,
     }: {
       taskId: string;
-      priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
+      priority: TaskPriority;
     }) => {
-      const task = await database.collections.get<Task>('tasks').find(taskId);
-      
-      // Changer la priorité avec outbox
-      await updateTaskWithOutbox(taskId, { priority });
-      
-      return task;
+      return tasksApi.update(taskId, { priority });
     },
     onSuccess: (_, { taskId }) => {
       queryClient.invalidateQueries({ queryKey: taskKeys.detail(taskId) });
@@ -279,14 +208,9 @@ export const useSetTaskDueDate = () => {
       dueDate,
     }: {
       taskId: string;
-      dueDate: Date;
+      dueDate: string;
     }) => {
-      const task = await database.collections.get<Task>('tasks').find(taskId);
-      
-      // Définir l'échéance avec outbox
-      await updateTaskWithOutbox(taskId, { dueDate });
-      
-      return task;
+      return tasksApi.update(taskId, { dueDate });
     },
     onSuccess: (_, { taskId }) => {
       queryClient.invalidateQueries({ queryKey: taskKeys.detail(taskId) });
@@ -305,23 +229,15 @@ export const useTaskStats = (projectId?: string) => {
     queryKey: [...taskKeys.all, 'stats', projectId],
     queryFn: async () => {
       if (!user) return null;
-
-      let query = database.collections.get<Task>('tasks').query().where('user_id', user.id);
-
-      if (projectId) {
-        query = query.where('project_id', projectId);
-      }
-
-      const tasks = await query.fetch();
-
+      const tasks: TaskResponse[] = await tasksApi.list({ userId: user.id, projectId });
       const stats = {
         total: tasks.length,
-        todo: tasks.filter(t => t.isTodo).length,
-        inProgress: tasks.filter(t => t.isInProgress).length,
-        done: tasks.filter(t => t.isDone).length,
-        cancelled: tasks.filter(t => t.isCancelled).length,
-        overdue: tasks.filter(t => t.isOverdue).length,
-        dueSoon: tasks.filter(t => t.isDueSoon).length,
+        todo: tasks.filter(t => t.status === 'TODO').length,
+        inProgress: tasks.filter(t => t.status === 'IN_PROGRESS').length,
+        done: tasks.filter(t => t.status === 'DONE').length,
+        cancelled: tasks.filter(t => t.status === 'CANCELLED').length,
+        overdue: tasks.filter(t => t.dueDate ? new Date(t.dueDate) < new Date() && t.status !== 'DONE' : false).length,
+        dueSoon: tasks.filter(t => t.dueDate ? (new Date(t.dueDate).getTime() - Date.now()) / (1000*60*60*24) <= 3 : false).length,
       };
 
       return stats;
