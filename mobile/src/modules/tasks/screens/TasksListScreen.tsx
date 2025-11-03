@@ -3,23 +3,21 @@
  * Exemple d'utilisation des hooks React Query + WatermelonDB
  */
 
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  RefreshControl,
-  Alert,
-} from 'react-native';
-import { useTasks, useCreateTask, useTaskStats } from '../hooks/useTasks';
-import { useSyncStatus } from '../../projects/hooks/useProjects';
-import TaskItem from '../components/TaskItem';
-import { theme } from '../../../config/theme';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import React, { useState } from 'react';
+import {
+  FlatList,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native';
+import { theme } from '../../../config/theme';
 import { TasksStackParamList } from '../../../types/models';
+import { useSyncStatus } from '../../projects/hooks/useProjects';
+import { useTasks, useTaskStats } from '../hooks/useTasks';
 
 interface TasksListScreenProps {
   projectId?: string;
@@ -39,9 +37,6 @@ const TasksListScreen: React.FC<TasksListScreenProps> = ({ projectId }) => {
   const { data: tasks, isLoading, refetch } = useTasks(filters);
   const { data: stats } = useTaskStats(projectId);
   const { data: syncStatus } = useSyncStatus();
-  
-  // Hooks pour les mutations
-  const createTaskMutation = useCreateTask();
 
   const handleCreateTask = () => {
     navigation.navigate('TaskEdit', { taskId: undefined as any });

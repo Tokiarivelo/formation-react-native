@@ -3,10 +3,9 @@
  * Intégration complète avec synchronisation offline/online
  */
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../../../store';
-import { syncManager } from '../../../sync/syncManager';
-import { tasksApi, TaskRequest, TaskResponse, TaskPriority, TaskStatus } from '../api';
+import { TaskPriority, TaskRequest, TaskResponse, tasksApi, TaskStatus } from '../api';
 
 // Clés de requête
 export const taskKeys = {
