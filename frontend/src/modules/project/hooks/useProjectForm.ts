@@ -1,15 +1,14 @@
 import { useState, useCallback } from 'react';
-import { useCreateProject, useUpdateProjectById } from './useProjects';
-import { ProjectStatus } from '../../../database/models/Project';
-import { ProjectResponseCount } from '../../../types/api';
+import { useCreateProject, useUpdateProject } from './useProjects';
+import Project, { ProjectStatus } from '../../../database/models/Project';
 
-export const useProjectForm = (isUpdate: boolean, project: ProjectResponseCount | undefined) => {
+export const useProjectForm = (isUpdate: boolean, project: Project | undefined) => {
     const [formData, setFormData] = useState({
         name: project?.name || "",
         description: project?.description || "",
         status: (project?.status || "ACTIVE") as ProjectStatus,
-        startDate: project?.startDate || "",
-        endDate: project?.endDate || "",
+        startDate: project?.startDate?.toISOString() || "",
+        endDate: project?.endDate?.toISOString() || "",
     });
 
     const {
@@ -26,7 +25,7 @@ export const useProjectForm = (isUpdate: boolean, project: ProjectResponseCount 
         isPending: updateLoading,
         isError: updateIsError,
         isSuccess: updateIsSuccess,
-    } = useUpdateProjectById();
+    } = useUpdateProject();
 
     const updateField = useCallback((field: keyof typeof formData, value: string) => {
         setFormData(prev => ({ ...prev, [field]: value }));

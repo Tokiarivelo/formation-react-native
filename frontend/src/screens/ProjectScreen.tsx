@@ -11,7 +11,7 @@ const Stack = createNativeStackNavigator<ProjectStackParamList>();
 
 const ProjectScreen = () => {
     return (
-        <Stack.Navigator>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="ProjectList" component={ProjectListScreen} />
             <Stack.Screen name="ProjectDetail" component={ProjectDetailScreen} />
             <Stack.Screen name="ProjectCreate" component={ProjectCreateScreen} />
