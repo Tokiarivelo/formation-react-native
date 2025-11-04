@@ -10,21 +10,23 @@ type dropdownType = {
 type AppDropdownType = {
     data: Array<dropdownType>,
     style?: StyleProp<ViewStyle>
+    textStyle?: StyleProp<ViewStyle>
     handleChange: (field: any, value: string) => void,
     fieldName: string,
     value: string,
 }
 
-const AppDropdown = ({ data, style, handleChange, fieldName, value }: AppDropdownType) => {
+const AppDropdown = ({ data, style, textStyle, handleChange, fieldName, value }: AppDropdownType) => {
     return (
-        <Dropdown style={[styles.dropdown, style]}
+        <Dropdown
+            style={[styles.dropdown, style]}
             data={data}
-            placeholder="Select Status"
             labelField="label"
             valueField="value"
-            placeholderStyle={styles.textStyle}
-            selectedTextStyle={styles.textStyle}
-            onChange={(v: any) => { handleChange(fieldName, v.value) }}
+            itemTextStyle={[styles.itemText, textStyle]}
+            activeColor="#eef6ff"
+            containerStyle={styles.containerStyle}
+            onChange={(v: any) => handleChange(fieldName, v.value)}
             value={value}
         />
     )
@@ -32,9 +34,27 @@ const AppDropdown = ({ data, style, handleChange, fieldName, value }: AppDropdow
 
 const styles = StyleSheet.create({
     dropdown: {
+        backgroundColor: '#f7f9fc',
+        borderWidth: 1,
+        borderColor: '#e2e8f0',
+        paddingHorizontal: 12,
+        paddingVertical: 10,
+        borderRadius: 10,
+        fontSize: 16,
+        marginBottom: 12,
     },
-    textStyle: {
-    }
-})
+    placeholder: {
+        color: '#9aa4b2',
+    },
+    selectedText: {
+        color: '#222',
+    },
+    itemText: {
+        color: '#222',
+    },
+    containerStyle: {
+        borderRadius: 10,
+    },
+});
 
 export default AppDropdown
