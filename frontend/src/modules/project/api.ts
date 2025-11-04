@@ -26,7 +26,7 @@ export const projectsApi = {
         }
     },
 
-    async getById(id: string): Promise<ProjectResponseDetail> {
+    async get(id: string): Promise<ProjectResponseDetail> {
         try {
             const response = await apiClient.get<ProjectResponseDetail>(`/projects/${id}`);
             return response.data;
@@ -36,7 +36,7 @@ export const projectsApi = {
         }
     },
 
-    async updateById({ id, projectParams }: { id: string, projectParams: ProjectParams }): Promise<ProjectResponseCount> {
+    async update({ id, projectParams }: { id: string, projectParams: ProjectParams }): Promise<ProjectResponseCount> {
         try {
             const response = await apiClient.put<ProjectResponseCount>(`/projects/${id}`, projectParams);
             return response.data;
@@ -46,7 +46,7 @@ export const projectsApi = {
         }
     },
 
-    async deleteById(id: string): Promise<string> {
+    async delete(id: string): Promise<string> {
         try {
             const response = await apiClient.delete<string>(`/projects/${id}`);
             return response.data;
@@ -54,6 +54,5 @@ export const projectsApi = {
             const axiosError = error as AxiosError;
             throw axiosError.response?.data || { message: 'Delete project failed.' };
         }
-    }
-
+    },
 }
