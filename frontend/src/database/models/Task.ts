@@ -1,5 +1,5 @@
 import { Model } from '@nozbe/watermelondb';
-import { field, date, relation, children } from '@nozbe/watermelondb/decorators';
+import { field, date, relation, children, writer } from '@nozbe/watermelondb/decorators';
 import { Associations } from '@nozbe/watermelondb/Model';
 import Project from './Project';
 import User from './User';
@@ -21,24 +21,29 @@ export enum TaskPriority {
 export default class Task extends Model {
     static table = 'tasks';
     static associations: Associations = {
-        projects: { type: 'belongs_to', key: 'projectId' },
-        attachments: { type: 'has_many', foreignKey: 'taskId' },
-        user: { type: 'belongs_to', key: 'userId' },
+        projects: { type: 'belongs_to', key: 'project_id' },
+        attachments: { type: 'has_many', foreignKey: 'task_id' },
+        users: { type: 'belongs_to', key: 'user_id' },
     };
 
     @field('title') title!: string;
     @field('description') description!: string;
     @field('status') status!: TaskStatus;
     @field('priority') priority!: TaskPriority;
-    @field('projectId') projectId!: string;
-    @field('userId') userId!: string;
-    @field('isDirty') isDirty!: boolean;
-    @date('dueDate') dueDate?: Date;
-    @date('createdAt') createdAt!: Date;
-    @date('updatedAt') updatedAt!: Date;
+    @field('project_id') projectId!: string;
+    @field('user_id') userId!: string;
+    @date('due_date') dueDate?: Date;
+    @date('created_at') createdAt!: Date;
+    @date('updated_at') updatedAt!: Date;
+
+    @field('is_dirty') isDirty!: boolean;
 
     @relation('projects', 'project_id') project!: Project;
-    @relation('users', 'userId') user!: User;
+    @relation('users', 'user_id') user!: User;
 
     @children('attachments') attachments!: Attachment[];
+
+    @writer async delete() {
+        await this.markAsDeleted();
+    }
 }

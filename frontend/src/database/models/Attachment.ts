@@ -8,24 +8,25 @@ import User from "./User";
 export default class Attachment extends Model {
     static table = 'attachments';
     static associations: Associations = {
-        projects: { type: 'belongs_to', key: 'projectId' },
-        tasks: { type: 'belongs_to', key: 'taskId' },
-        users: { type: 'belongs_to', key: 'userId' },
+        projects: { type: 'belongs_to', key: 'project_id' },
+        tasks: { type: 'belongs_to', key: 'task_id' },
+        users: { type: 'belongs_to', key: 'user_id' },
     };
 
     @field('filename') filename!: string;
-    @field('originalName') originalName!: string;
-    @field('mimeType') mimeType!: string;
+    @field('original_name') originalName!: string;
+    @field('mime_type') mimeType!: string;
     @field('size') size!: number;
     @field('path') path!: string;
-    @field('projectId') projectId!: string;
-    @field('taskId') taskId!: string;
-    @field('userId') userId!: string;
-    @field('isDirty') isDirty!: boolean;
-    @date('createdAt') createdAt!: Date;
-    @date('updatedAt') updatedAt!: Date;
+    @field('project_id') projectId?: string;
+    @field('task_id') taskId?: string;
+    @field('user_id') userId!: string;
+    @date('created_at') createdAt!: Date;
+    @date('updated_at') updatedAt!: Date;
 
-    @relation('projects', 'projectId') project!: Project;
-    @relation('tasks', 'taskId') task!: Task;
-    @relation('users', 'userId') user!: User;
+    @field('is_dirty') isDirty!: boolean;
+
+    @relation('projects', 'project_id') project!: Project;
+    @relation('tasks', 'task_id') task!: Task;
+    @relation('users', 'user_id') user!: User;
 }

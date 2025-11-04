@@ -13,23 +13,23 @@ export enum UserRole {
 export default class User extends Model {
     static table = 'users'
     static associations: Associations = {
-        projects: { type: 'has_many', foreignKey: 'userId' },
-        tasks: { type: 'has_many', foreignKey: 'userId' },
-        attachments: { type: 'has_many', foreignKey: 'userId' },
+        projects: { type: 'has_many', foreignKey: 'user_id' },
+        tasks: { type: 'has_many', foreignKey: 'user_id' },
+        attachments: { type: 'has_many', foreignKey: 'user_id' },
     };
 
     // Basic user fields (match these names/types with schema.ts)
     @field('username') username!: string
     @field('email') email!: string
     @field('password') password!: string;
-    @field('firstName') firstName?: string;
-    @field('lastName') lastName?: string;
-    @field('isActive') isActive!: boolean;
+    @field('first_name') firstName?: string;
+    @field('last_name') lastName?: string;
+    @field('is_active') isActive!: boolean;
     @field('role') role!: UserRole;
-    @date('createdAt') createdAt!: Date;
-    @date('updatedAt') updatedAt!: Date;
+    @date('created_at') createdAt!: Date;
+    @date('updated_at') updatedAt!: Date;
 
-    @date('isDirty') isDirty!: Date;
+    @field('is_dirty') isDirty!: boolean;
 
     @children('projects') projects!: Project[];
     @children('tasks') tasks!: Task[];
