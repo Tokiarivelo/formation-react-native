@@ -1,11 +1,11 @@
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import React from 'react';
 import AppTextInput from '../../../components/ui/AppTextInput';
-import AppPressable from '../../../components/ui/AppPressable';
 import AppSwitch from '../../../components/ui/AppSwitch';
 import { useAuthForm } from '../hooks/useAuthForm';
 import { getErrorMessages } from '../../utils/errorUtils';
 import AppText from '../../../components/ui/AppText';
+import AppTouchableOpacity from '../../../components/ui/AppTouchableOpacity';
 
 const AuthForm = ({ signUp }: { signUp: boolean }) => {
   const {
@@ -21,32 +21,37 @@ const AuthForm = ({ signUp }: { signUp: boolean }) => {
 
   return (
     <View>
+      <AppText style={styles.title}>{signUp ? 'Register' : 'Login'}</AppText>
+
       <AppTextInput
-        placeholder="email"
+        placeholder="Email"
         value={formData.email}
         onChangeText={(value) => updateField('email', value)}
         keyboardType="email-address"
         textContentType="emailAddress"
         autoComplete="email"
+        style={styles.input}
       />
 
       <AppTextInput
-        placeholder="password"
+        placeholder="Password"
         secure={!showPassword}
         value={formData.password}
         onChangeText={(value) => updateField('password', value)}
         textContentType="password"
         autoComplete="password"
+        style={styles.input}
       />
 
       {signUp && (
         <>
           <AppTextInput
-            placeholder="username"
+            placeholder="Username"
             value={formData.username}
             onChangeText={(value) => updateField('username', value)}
             textContentType="username"
             autoComplete="username"
+            style={styles.input}
           />
           <AppTextInput
             placeholder="First Name"
@@ -54,6 +59,7 @@ const AuthForm = ({ signUp }: { signUp: boolean }) => {
             onChangeText={(value) => updateField('firstName', value)}
             textContentType="name"
             autoComplete="name"
+            style={styles.input}
           />
           <AppTextInput
             placeholder="Last Name"
@@ -61,30 +67,42 @@ const AuthForm = ({ signUp }: { signUp: boolean }) => {
             onChangeText={(value) => updateField('lastName', value)}
             textContentType="name"
             autoComplete="name"
+            style={styles.input}
           />
         </>
       )}
 
-      <AppSwitch
-        value={showPassword}
-        onValueChange={toggleShowPassword}
-        trackColor={{ false: '#767577', true: '#81b0ff' }}
-        thumbColor={showPassword ? '#f5dd4b' : '#f4f3f4'}
-        ios_backgroundColor="#3e3e3e"
-      />
+      <View style={styles.switchContainer}>
+        <AppSwitch
+          value={showPassword}
+          onValueChange={toggleShowPassword}
+          trackColor={{ false: '#ccc', true: '#81b0ff' }}
+          thumbColor={showPassword ? '#f5dd4b' : '#f4f3f4'}
+          ios_backgroundColor="#3e3e3e"
+        />
+        <AppText style={styles.switchLabel}>Show password?</AppText>
+      </View>
 
-      <AppText>Show password?</AppText>
-
-      <AppPressable onPress={handleSubmit} disabled={isLoading}>
-        <AppText>
-          {signUp ? `${isLoading ? 'Signing up...' : 'Sign up'}` : `${isLoading ? 'Logging in...' : 'Log in'}`}
+      <AppTouchableOpacity
+        onPress={handleSubmit}
+        disabled={isLoading}
+        style={styles.button}
+      >
+        <AppText style={styles.buttonText}>
+          {signUp
+            ? isLoading
+              ? 'Signing up...'
+              : 'Sign Up'
+            : isLoading
+              ? 'Logging in...'
+              : 'Log In'}
         </AppText>
-      </AppPressable>
+      </AppTouchableOpacity>
 
       {isError && (
-        <View style={{ marginTop: 10 }}>
+        <View style={styles.errorContainer}>
           {getErrorMessages(error).map((msg, i) => (
-            <AppText key={i} style={{ color: 'red', marginBottom: 4 }}>
+            <AppText key={i} style={styles.errorText}>
               {msg}
             </AppText>
           ))}
@@ -93,5 +111,47 @@ const AuthForm = ({ signUp }: { signUp: boolean }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  title: {
+    fontSize: 32,
+    fontWeight: '700',
+    marginBottom: 24,
+    textAlign: 'center',
+    color: '#222',
+  },
+  input: {
+    marginBottom: 16,
+  },
+  switchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  switchLabel: {
+    marginLeft: 12,
+    fontSize: 16,
+    color: '#555',
+  },
+  button: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  errorContainer: {
+    marginTop: 12,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 14,
+    marginBottom: 4,
+  },
+});
 
 export default AuthForm;

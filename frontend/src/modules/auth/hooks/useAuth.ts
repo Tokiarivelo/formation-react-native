@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { loginUser, logoutUser, registerUser } from "../api";
 import { clearTokens, saveTokens } from "../tokenStore";
 import { clearCredentials, saveCredentials, useAuthStore } from "../../../store/authStore";
+import { syncNow } from "../../../services/syncService";
 
 export const useLogin = () => {
     const authLogin = useAuthStore((state) => state.authLogin);
@@ -11,6 +12,7 @@ export const useLogin = () => {
         onSuccess: async (data, variables) => {
             await saveTokens(data);
             await saveCredentials({ username: variables.email, password: variables.password });
+            await syncNow();
             setBiometricEnabled(false);
             authLogin(data.user);
         },
@@ -51,6 +53,7 @@ export const useRegister = () => {
         onSuccess: async (data, variables) => {
             await saveTokens(data);
             await saveCredentials({ username: variables.email, password: variables.password });
+            await syncNow();
             authLogin(data.user);
             setBiometricEnabled(false);
         },
