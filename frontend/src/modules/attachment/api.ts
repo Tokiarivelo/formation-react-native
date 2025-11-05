@@ -47,7 +47,7 @@ export const attachmentsApi = {
         }
     },
 
-    async getById(id: string): Promise<Attachment> {
+    async get(id: string): Promise<Attachment> {
         try {
             const response = await apiClient.get<Attachment>(`/attachments/${id}`);
             return response.data;
@@ -57,7 +57,7 @@ export const attachmentsApi = {
         }
     },
 
-    async deleteById(id: string): Promise<string> {
+    async delete(id: string): Promise<string> {
         try {
             const response = await apiClient.delete<string>(`/attachments/${id}`);
             return response.data;
@@ -67,7 +67,7 @@ export const attachmentsApi = {
         }
     },
 
-    async downloadById(id: string): Promise<void> {
+    async download(id: string): Promise<void> {
         try {
             const response = await apiClient.get(`/attachments/${id}/download`, {
                 responseType: 'blob',

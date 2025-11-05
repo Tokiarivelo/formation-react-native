@@ -1,9 +1,9 @@
-import { Model } from '@nozbe/watermelondb'
+import { Model, Query } from '@nozbe/watermelondb'
 import { field, date, children } from '@nozbe/watermelondb/decorators'
 import { Associations } from '@nozbe/watermelondb/Model';
 import Project from './Project';
-import { Task } from 'react-native';
 import Attachment from './Attachment';
+import Task from './Task';
 
 export enum UserRole {
     USER = 'USER',
@@ -31,7 +31,7 @@ export default class User extends Model {
 
     @field('is_dirty') isDirty!: boolean;
 
-    @children('projects') projects!: Project[];
-    @children('tasks') tasks!: Task[];
-    @children('attachments') attachments!: Attachment[];
+    @children('projects') projects!: Query<Project>;
+    @children('tasks') tasks!: Query<Task>;
+    @children('attachments') attachments!: Query<Attachment>;
 }

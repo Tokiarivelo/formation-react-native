@@ -1,6 +1,8 @@
 import { useState, useCallback } from 'react';
 import { useCreateProject, useUpdateProject } from './useProjects';
 import Project, { ProjectStatus } from '../../../database/models/Project';
+import { projectFormValidation } from '../../../utils/validators';
+import { Alert } from 'react-native';
 
 export const useProjectForm = (isUpdate: boolean, project: Project | undefined) => {
     const [formData, setFormData] = useState({
@@ -33,6 +35,11 @@ export const useProjectForm = (isUpdate: boolean, project: Project | undefined) 
 
 
     const handleSubmit = useCallback(() => {
+        const errors = projectFormValidation(formData);
+        if (errors.length > 0) {
+            Alert.alert('Error', errors.join('\n'));
+            return;
+        }
         if (isUpdate) {
             update({ id: project!.id, projectParams: formData });
         }

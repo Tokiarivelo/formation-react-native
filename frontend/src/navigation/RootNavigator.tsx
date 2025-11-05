@@ -1,4 +1,4 @@
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, ActivityIndicator, StyleSheet, Platform } from 'react-native';
 import renderAppStack from './AppStack';
 import renderAuthStack from './AuthStack';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -6,6 +6,7 @@ import { useAuthStore } from '../store/authStore';
 import { useEffect } from 'react';
 import { useLogout } from '../modules/auth/hooks/useAuth';
 import { clearOnLogout, setOnLogout } from '../services/navigationService';
+import { mySync, useNetworkStatus } from '../services/syncService';
 
 const Root = createNativeStackNavigator();
 
@@ -14,6 +15,8 @@ const RootNavigator = () => {
     const isLoading = useAuthStore((state) => state.isLoading);
     const checkAuthStatus = useAuthStore((state) => state.checkAuthStatus);
     const { mutate: logout } = useLogout();
+
+    const isConnected = useNetworkStatus();
 
     //setOnLogOut that is called when a logout is triggered
     useEffect(() => {
@@ -25,8 +28,16 @@ const RootNavigator = () => {
         const check = async () => {
             await checkAuthStatus();
         }
-        check();
-    }, [checkAuthStatus]);
+        if (isConnected) {
+            check();
+            if (isLoggedIn) {
+                const delay = Platform.OS === 'android' ? 500 : 200;
+                setTimeout(() => {
+                    mySync();
+                }, delay);
+            }
+        }
+    }, [checkAuthStatus, isConnected, isLoggedIn]);
 
     if (isLoading) {
         return (

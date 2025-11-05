@@ -55,8 +55,6 @@ export const refreshAccessToken = async (): Promise<AuthResponse> => {
         console.log("Successfully refreshed access token");
         return response.data;
     } catch (error) {
-        // If refresh fails, tokens are fully expired/invalid. 
-        // The calling interceptor/hook should trigger a full logout.
         const axiosError = error as AxiosError;
         throw axiosError.response?.data || { message: 'Token refresh failed.' };
     }

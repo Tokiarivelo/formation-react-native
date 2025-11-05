@@ -21,7 +21,7 @@ export const useUsers = () => {
 
 export const useUserById = (id: string) => {
     return useQuery({
-        queryFn: () => usersApi.getById(id),
+        queryFn: () => usersApi.get(id),
         queryKey: ['users', id],
         enabled: !!id
     })
@@ -43,11 +43,11 @@ export const useUpdateAuthUser = () => {
     })
 }
 
-export const useUpdateUserById = () => {
+export const useUpdateUser = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: usersApi.updateById,
+        mutationFn: usersApi.update,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['users'] });
         },
@@ -57,11 +57,11 @@ export const useUpdateUserById = () => {
     })
 }
 
-export const useDeleteUserById = () => {
+export const useDeleteUser = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: usersApi.deleteById,
+        mutationFn: usersApi.delete,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['users'] });
         },

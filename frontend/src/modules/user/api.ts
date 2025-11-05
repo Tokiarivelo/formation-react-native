@@ -25,7 +25,7 @@ export const usersApi = {
         }
     },
 
-    async getById(id: string): Promise<User> {
+    async get(id: string): Promise<User> {
         try {
             const response = await apiClient.get<User>(`/users/${id}`);
             return response.data;
@@ -45,7 +45,7 @@ export const usersApi = {
         }
     },
 
-    async updateById({ id, userParams }: { id: string, userParams: UserParams }): Promise<User> {
+    async update({ id, userParams }: { id: string, userParams: UserParams }): Promise<User> {
         try {
             const response = await apiClient.put<User>(`/users/${id}`, userParams);
             return response.data;
@@ -55,7 +55,7 @@ export const usersApi = {
         }
     },
 
-    async deleteById(id: string): Promise<string> {
+    async delete(id: string): Promise<string> {
         try {
             const response = await apiClient.delete<string>(`/users/${id}`);
             return response.data;

@@ -2,7 +2,7 @@ import React from 'react'
 import AppTouchableOpacity from '../../../components/ui/AppTouchableOpacity';
 import { Alert, FlatList, Image, ImageStyle, StyleProp, StyleSheet, TouchableOpacityProps } from 'react-native';
 import { Attachment } from '../../../types/api';
-import { useDeleteAttachmentById, useDownloadAttachment } from '../hooks/useAttachments';
+import { useDeleteAttachment, useDownloadAttachment } from '../hooks/useAttachments';
 
 type AttachmentThumbnailProps = TouchableOpacityProps & {
     attachment: Attachment;
@@ -13,9 +13,9 @@ type AttachmentThumbnailProps = TouchableOpacityProps & {
     handleImageIndex: (index: number) => void;
 }
 
-const AttachemntThumbnail = ({ attachment, style, attachmentPath, index, flatListRef, handleImageIndex, ...props }: AttachmentThumbnailProps) => {
+const AttachmentThumbnail = ({ attachment, style, attachmentPath, index, flatListRef, handleImageIndex, ...props }: AttachmentThumbnailProps) => {
     const { mutate: download } = useDownloadAttachment();
-    const { mutate: deleteAttachment } = useDeleteAttachmentById();
+    const { mutate: deleteAttachment } = useDeleteAttachment();
     const handleLongPress = () => {
         Alert.alert(
             attachment.originalName,
@@ -69,6 +69,7 @@ const AttachemntThumbnail = ({ attachment, style, attachmentPath, index, flatLis
                     flatListRef.current?.scrollToIndex({ index, animated: false });
                 }, 100);
             }}
+            style={styles.button}
             onLongPress={() => handleLongPress()}
             {...props}
         >
@@ -87,6 +88,9 @@ const styles = StyleSheet.create({
         height: 100,
         borderRadius: 8,
     },
+    button: {
+        backgroundColor: "transparent"
+    }
 });
 
-export default AttachemntThumbnail
+export default AttachmentThumbnail

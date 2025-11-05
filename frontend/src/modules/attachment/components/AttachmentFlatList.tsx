@@ -1,7 +1,7 @@
 import { View, FlatList, NativeScrollEvent, NativeSyntheticEvent, Image, StyleSheet, Dimensions, Modal } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { configs } from '../../../configs/config';
-import AttachemntThumbnail from './AttachemntThumbnail';
+import AttachemntThumbnail from './AttachmentThumbnail';
 import AppTouchableOpacity from '../../../components/ui/AppTouchableOpacity';
 import AppText from '../../../components/ui/AppText';
 import { Attachment } from '../../../types/api';
@@ -30,7 +30,7 @@ const AttachmentFlatList = ({ attachments }: { attachments: Attachment[] }) => {
     );
     return (
         <View>
-            {/* Thumbnails */}
+            {/* THUMBNAILS */}
             <View style={styles.thumbnailContainer}>
                 {attachments && attachments.length > 0 && (
                     attachments.map((attachment, index) => (
@@ -57,7 +57,7 @@ const AttachmentFlatList = ({ attachments }: { attachments: Attachment[] }) => {
                         style={styles.closeButton}
                         onPress={() => setSelectedImageIndex(null)}
                     >
-                        <AppText style={styles.closeButtonText}>✕</AppText>
+                        <AppText style={styles.closeButtonText}>x</AppText>
                     </AppTouchableOpacity>
 
                     <FlatList
@@ -133,9 +133,11 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(255, 255, 255, 0.3)',
         justifyContent: 'center',
         alignItems: 'center',
+        paddingVertical: 0,
+        paddingHorizontal: 0
     },
     closeButtonText: {
-        fontSize: 24,
+        fontSize: 20,
         color: 'white',
     },
     counterContainer: {

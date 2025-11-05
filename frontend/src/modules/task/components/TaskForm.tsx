@@ -1,4 +1,4 @@
-import { View } from 'react-native'
+import { ScrollView, StyleSheet, View } from 'react-native'
 import React, { useEffect } from 'react'
 import AppTextInput from '../../../components/ui/AppTextInput';
 import AppDropdown from '../../../components/ui/AppDropdown';
@@ -7,11 +7,10 @@ import AppPressable from '../../../components/ui/AppPressable';
 import AppText from '../../../components/ui/AppText';
 import { getErrorMessages } from '../../utils/errorUtils';
 import { useNavigation } from '@react-navigation/native';
-import { TaskResponseCount } from '../../../types/api';
 import { useTaskForm } from '../hooks/useTaskForm';
-import { TaskPriority, TaskStatus } from '../../../database/models/Task';
+import Task, { TaskPriority, TaskStatus } from '../../../database/models/Task';
 
-const TaskForm = ({ isUpdate, task, projectId }: { isUpdate: boolean, task?: TaskResponseCount, projectId: string }) => {
+const TaskForm = ({ isUpdate, task, projectId }: { isUpdate: boolean, task?: Task, projectId: string }) => {
     const navigation = useNavigation();
     const {
         formData,
@@ -44,49 +43,146 @@ const TaskForm = ({ isUpdate, task, projectId }: { isUpdate: boolean, task?: Tas
         { label: 'Urgent', value: TaskPriority.URGENT },
     ];
     return (
-        <View>
-            <AppTextInput
-                placeholder="name"
-                value={formData.title}
-                onChangeText={(value) => updateField('title', value)}
-                textContentType="name"
-                autoComplete="name"
-            />
-            <AppTextInput
-                placeholder="description"
-                value={formData.description}
-                onChangeText={(value) => updateField('description', value)}
-            />
-            <AppDropdown data={dropdownStatusOptions}
-                handleChange={updateField}
-                fieldName="status"
-                value={formData.status} />
-            <AppDropdown data={dropDownPriorityOptions}
-                handleChange={updateField}
-                fieldName="priority"
-                value={formData.priority} />
-            <AppDateTimePicker
-                label='Due Date'
-                value={formData.dueDate}
-                onChange={(value) => updateField('dueDate', value)}
-            />
-            <AppPressable onPress={(handleSubmit)} disabled={isLoading}>
-                <AppText>
-                    {isUpdate ? (isLoading ? 'Updating' : "Update Task") : (isLoading ? 'Creating' : "Create Task")}
-                </AppText>
-            </AppPressable>
+        <ScrollView contentContainerStyle={styles.screen} keyboardShouldPersistTaps="handled">
+            <View style={styles.card}>
+                <AppText style={styles.title}>{isUpdate ? 'Update Task' : 'Create Task'}</AppText>
 
-            {isError && (
-                <View style={{ marginTop: 10 }}>
-                    {getErrorMessages(error).map((msg, i) => (
-                        <AppText key={i} style={{ color: 'red', marginBottom: 4 }}>
-                            {msg}
-                        </AppText>
-                    ))}
+                <AppTextInput
+                    placeholder="Title"
+                    value={formData.title}
+                    onChangeText={(value) => updateField('title', value)}
+                    textContentType="name"
+                    autoComplete="name"
+                    style={styles.input}
+                />
+
+                <AppTextInput
+                    placeholder="Description (optional)"
+                    value={formData.description}
+                    onChangeText={(value) => updateField('description', value)}
+                    style={[styles.input, styles.multiline]}
+                    multiline
+                    numberOfLines={3}
+                />
+
+                <View style={styles.row}>
+                    <View style={styles.half}>
+                        <AppDropdown
+                            data={dropdownStatusOptions}
+                            handleChange={updateField}
+                            fieldName="status"
+                            value={formData.status}
+                            style={styles.input}
+                        />
+                    </View>
+
+                    <View style={styles.half}>
+                        <AppDropdown
+                            data={dropDownPriorityOptions}
+                            handleChange={updateField}
+                            fieldName="priority"
+                            value={formData.priority}
+                            style={styles.input}
+                        />
+                    </View>
                 </View>
-            )}
-        </View>
+
+                <AppDateTimePicker
+                    label="Due Date"
+                    value={formData.dueDate}
+                    onChange={(value) => updateField('dueDate', value)}
+                />
+
+                <AppPressable
+                    onPress={handleSubmit as any}
+                    disabled={isLoading}
+                    style={[styles.primaryButton, isLoading && styles.buttonDisabled]}
+                >
+                    <AppText style={styles.primaryButtonText}>
+                        {isLoading ? (isUpdate ? 'Updating…' : 'Creating…') : isUpdate ? 'Update Task' : 'Create Task'}
+                    </AppText>
+                </AppPressable>
+
+                {isError && (
+                    <View style={styles.errorBox}>
+                        {getErrorMessages(error).map((msg, i) => (
+                            <AppText key={i} style={styles.errorText}>
+                                {msg}
+                            </AppText>
+                        ))}
+                    </View>
+                )}
+            </View>
+        </ScrollView>
     )
 }
+
+const styles = StyleSheet.create({
+    screen: {
+        padding: 16,
+        paddingBottom: 40,
+        backgroundColor: '#f6f7fb',
+        flexGrow: 1,
+    },
+    card: {
+        backgroundColor: '#fff',
+        borderRadius: 12,
+        padding: 16,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.06,
+        shadowRadius: 10,
+        elevation: 3,
+    },
+    title: {
+        fontSize: 18,
+        fontWeight: '700',
+        marginBottom: 12,
+        color: '#222',
+    },
+    input: {
+        marginBottom: 12,
+    },
+    multiline: {
+        minHeight: 80,
+        textAlignVertical: 'top',
+    },
+    row: {
+        flexDirection: 'row',
+        gap: 12,
+        marginBottom: 8,
+    },
+    half: {
+        flex: 1,
+    },
+    primaryButton: {
+        marginTop: 12,
+        backgroundColor: '#1e88e5',
+        paddingVertical: 14,
+        borderRadius: 10,
+        alignItems: 'center',
+    },
+    primaryButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '700',
+    },
+    buttonDisabled: {
+        opacity: 0.6,
+    },
+    errorBox: {
+        marginTop: 12,
+        padding: 10,
+        backgroundColor: '#fff6f6',
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: '#f3c1c1',
+    },
+    errorText: {
+        color: '#d32f2f',
+        fontSize: 13,
+        marginBottom: 4,
+    },
+});
 
 export default TaskForm

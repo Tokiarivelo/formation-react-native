@@ -1,4 +1,4 @@
-import { Model } from "@nozbe/watermelondb";
+import { Model, Query } from "@nozbe/watermelondb";
 import { children, date, field, relation, writer } from "@nozbe/watermelondb/decorators";
 import { Associations } from "@nozbe/watermelondb/Model";
 import User from "./User";
@@ -32,20 +32,29 @@ export default class Project extends Model {
 
     @relation('users', 'user_id') user!: User;
 
-    @children('tasks') tasks!: Task[];
-    @children('attachments') attachments!: Attachment[];
+    @children('tasks') tasks!: Query<Task>;
+    @children('attachments') attachments!: Query<Attachment>;
 
     @writer async delete(isPermanent: boolean) {
+        const tasks = await this.tasks.fetch();
         if (isPermanent) {
             await this.destroyPermanently();
         }
         else {
-            await this.markAsDeleted();
+            const tasksDestroyPermanently = tasks.map(t => t.prepareDestroyPermanently());
+            await this.batch(...tasksDestroyPermanently, this.prepareMarkAsDeleted());
         }
     }
 
     @writer async deleteAndCreate(project: ProjectResponseCount) {
+        const tasks = await this.tasks.fetch();
+        const taskPrepares = tasks.map((task) =>
+            task.prepareUpdate((t) => {
+                t.projectId = project.id;
+            })
+        );
         await this.batch(
+            ...taskPrepares,
             this.prepareDestroyPermanently(),
             this.collections.get<Project>('projects').prepareCreate((rec: Project) => {
                 rec._raw.id = project.id;
@@ -58,7 +67,8 @@ export default class Project extends Model {
                 rec.createdAt = new Date(project.createdAt);
                 rec.updatedAt = new Date(project.updatedAt);
                 rec.isDirty = false;
-            })
+                rec._raw._status = "synced";
+            }),
         )
     }
 }

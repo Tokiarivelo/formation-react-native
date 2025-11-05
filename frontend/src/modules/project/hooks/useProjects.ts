@@ -60,6 +60,7 @@ export const useUpdateProject = () => {
                     await project.update((p) => {
                         p.updatedAt = new Date(remoteProject.updatedAt);
                         p.isDirty = false;
+                        p._raw._status = "synced";
                     });
                 })
             }

@@ -26,7 +26,7 @@ export const tasksApi = {
         }
     },
 
-    async getById(id: string): Promise<TaskResponseDetail> {
+    async get(id: string): Promise<TaskResponseDetail> {
         try {
             const response = await apiClient.get<TaskResponseDetail>(`/tasks/${id}`);
             return response.data;
@@ -36,7 +36,7 @@ export const tasksApi = {
         }
     },
 
-    async updateById({ id, taskParams }: { id: string, taskParams: TaskParams }): Promise<TaskResponseCount> {
+    async update({ id, taskParams }: { id: string, taskParams: TaskParams }): Promise<TaskResponseCount> {
         try {
             const response = await apiClient.put<TaskResponseCount>(`/tasks/${id}`, taskParams);
             return response.data;
@@ -46,7 +46,7 @@ export const tasksApi = {
         }
     },
 
-    async deleteById(id: string): Promise<string> {
+    async delete(id: string): Promise<string> {
         try {
             const response = await apiClient.delete<string>(`/tasks/${id}`);
             return response.data;

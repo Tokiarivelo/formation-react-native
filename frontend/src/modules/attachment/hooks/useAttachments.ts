@@ -26,15 +26,15 @@ export const useAttachments = (projectId: string, taskId: string) => {
 export const useAttachmentById = (id: string) => {
     return useQuery({
         queryKey: ['attachment', id],
-        queryFn: () => attachmentsApi.getById(id),
+        queryFn: () => attachmentsApi.get(id),
         enabled: !!id,
     });
 }
 
-export const useDeleteAttachmentById = () => {
+export const useDeleteAttachment = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: attachmentsApi.deleteById,
+        mutationFn: attachmentsApi.delete,
         onSuccess: () => {
             console.log('Attachment deleted successfully');
             queryClient.invalidateQueries({ queryKey: ['attachments'] });
@@ -47,7 +47,7 @@ export const useDeleteAttachmentById = () => {
 
 export const useDownloadAttachment = () => {
     return useMutation({
-        mutationFn: attachmentsApi.downloadById,
+        mutationFn: attachmentsApi.download,
         onSuccess: () => {
             console.log('Attachment downloaded successfully');
         },
