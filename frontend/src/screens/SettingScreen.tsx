@@ -1,11 +1,12 @@
 import { View } from 'react-native'
 import React from 'react'
-import AppPressable from '../components/ui/AppPressable';
 import { useLogout } from '../modules/auth/hooks/useAuth';
 import AppText from '../components/ui/AppText';
 import AppSwitch from '../components/ui/AppSwitch';
 import { useAuthStore } from '../store/authStore';
 import { useDisableBiometric, useEnableBiometric } from '../modules/auth/hooks/useBiometricAuth';
+import AppTouchableOpacity from '../components/ui/AppTouchableOpacity';
+import { mySync } from '../services/syncService';
 
 const SettingScreen = () => {
     const biometricEnabled = useAuthStore((s) => s.biometricEnabled);
@@ -23,6 +24,17 @@ const SettingScreen = () => {
             disableBiometric();
         }
     }
+
+    const handleSync = async () => {
+        try {
+            await mySync();
+            console.log("sync successfull");
+        }
+        catch (error) {
+            console.log("sync failed", error);
+        }
+    }
+
     return (
         <View>
             <AppSwitch
@@ -35,11 +47,16 @@ const SettingScreen = () => {
 
             <AppText>Enable Biometrics?</AppText>
 
-            <AppPressable onPress={handleLogout}>
+            <AppTouchableOpacity onPress={handleSync}>
+                <AppText>
+                    Sync now
+                </AppText>
+            </AppTouchableOpacity>
+            <AppTouchableOpacity onPress={handleLogout}>
                 <AppText>
                     Logout
                 </AppText>
-            </AppPressable>
+            </AppTouchableOpacity>
         </View>
     )
 }
