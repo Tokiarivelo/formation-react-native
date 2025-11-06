@@ -1,4 +1,3 @@
-import NetInfo from '@react-native-community/netinfo';
 import { projectsApi } from '../modules/project/api';
 import { tasksApi } from '../modules/task/api';
 import { database } from '../database';
@@ -6,11 +5,8 @@ import Project from '../database/models/Project';
 import Task from '../database/models/Task';
 import User, { UserRole } from '../database/models/User';
 import { usersApi } from '../modules/user/api';
-
-
 import { synchronize } from '@nozbe/watermelondb/sync'
 import { mapProjectFromServer, mapTaskFromServer } from '../utils/syncHelpers';
-import { useEffect, useState } from 'react';
 import { projectsApi_local } from '../modules/project/localApi';
 import { tasksApi_local } from '../modules/task/localApi';
 import { Q } from '@nozbe/watermelondb';
@@ -194,16 +190,16 @@ export async function upsertAuthUser(): Promise<void> {
     })
 }
 
-export function useNetworkStatus() {
-    const [isConnected, setIsConnected] = useState(true);
+// export function useNetworkStatus() {
+//     const [isConnected, setIsConnected] = useState(true);
 
-    useEffect(() => {
-        const unsubscribe = NetInfo.addEventListener(state => {
-            setIsConnected(state.isConnected ?? false);
-        });
+//     useEffect(() => {
+//         const unsubscribe = NetInfo.addEventListener(state => {
+//             setIsConnected(state.isConnected ?? false);
+//         });
 
-        return () => unsubscribe();
-    }, []);
+//         return () => unsubscribe();
+//     }, []);
 
-    return isConnected;
-}
+//     return isConnected;
+// }

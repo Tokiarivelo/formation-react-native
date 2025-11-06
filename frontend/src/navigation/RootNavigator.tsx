@@ -6,7 +6,8 @@ import { useAuthStore } from '../store/authStore';
 import { useEffect } from 'react';
 import { useLogout } from '../modules/auth/hooks/useAuth';
 import { clearOnLogout, setOnLogout } from '../services/navigationService';
-import { mySync, useNetworkStatus } from '../services/syncService';
+import { mySync } from '../services/syncService';
+import { useNetInfo } from '@react-native-community/netinfo';
 
 const Root = createNativeStackNavigator();
 
@@ -16,7 +17,7 @@ const RootNavigator = () => {
     const checkAuthStatus = useAuthStore((state) => state.checkAuthStatus);
     const { mutate: logout } = useLogout();
 
-    const isConnected = useNetworkStatus();
+    const { isConnected } = useNetInfo();
 
     //setOnLogOut that is called when a logout is triggered
     useEffect(() => {

@@ -7,9 +7,11 @@ import { useAuthStore } from '../store/authStore';
 import { useDisableBiometric, useEnableBiometric } from '../modules/auth/hooks/useBiometricAuth';
 import AppTouchableOpacity from '../components/ui/AppTouchableOpacity';
 import { mySync } from '../services/syncService';
+import { useNetInfo } from '@react-native-community/netinfo';
 
 const SettingScreen = () => {
     const biometricEnabled = useAuthStore((s) => s.biometricEnabled);
+    const { isConnected } = useNetInfo();
     const { mutate: enableBiometric } = useEnableBiometric();
     const { mutate: disableBiometric } = useDisableBiometric();
     const { mutateAsync: logoutAsync } = useLogout();
@@ -52,7 +54,7 @@ const SettingScreen = () => {
                     Sync now
                 </AppText>
             </AppTouchableOpacity>
-            <AppTouchableOpacity onPress={handleLogout}>
+            <AppTouchableOpacity onPress={handleLogout} disabled={!isConnected}>
                 <AppText>
                     Logout
                 </AppText>
