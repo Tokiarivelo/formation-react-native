@@ -70,6 +70,8 @@ export async function mySync() {
         },
         pushChanges: async ({ changes }) => {
             // Push local changes to server
+            const projectIdMap = new Map<string, string>(); //map for server and local project id
+
             for (const project of changes.projects.created) {
                 const projectParams = {
                     name: project.name,
@@ -79,8 +81,10 @@ export async function mySync() {
                     endDate: new Date(project.end_date).toISOString(),
                 }
                 const remoteProject = await projectsApi.create(projectParams);
+                const serverId = String(remoteProject.id);
                 const projectModel = await database.get<Project>('projects').find(project.id);
-                projectModel.deleteAndCreate(remoteProject);
+                await projectModel.deleteAndCreate(remoteProject);
+                projectIdMap.set(String(project.id), serverId);
             }
             for (const project of changes.projects.updated) {
                 const projectParams = {
@@ -106,13 +110,15 @@ export async function mySync() {
 
             // Same for tasks
             for (const task of changes.tasks.created) {
+                const clientProjectId = String(task.project_id);
+                const serverProjectId = projectIdMap.get(clientProjectId) ?? clientProjectId;
                 const taskParams = {
                     title: task.title,
                     description: task.description,
                     status: task.status,
                     priority: task.priority,
                     dueDate: new Date(task.due_date).toISOString(),
-                    projectId: task.project_id
+                    projectId: serverProjectId,
                 }
                 const remoteTask = await tasksApi.create(taskParams);
                 const taskModel = await database.get<Task>('tasks').find(task.id);
@@ -125,9 +131,13 @@ export async function mySync() {
                     status: task.status,
                     priority: task.priority,
                     dueDate: new Date(task.due_date).toISOString(),
-                    projectId: task.project_id
                 }
-                await tasksApi.update({ id: task.id, taskParams });
+                try {
+                    await tasksApi.update({ id: task.id, taskParams });
+                }
+                catch (e) {
+                    console.log("error in task update", e)
+                }
             }
             for (const taskId of changes.tasks.deleted) {
                 try {
