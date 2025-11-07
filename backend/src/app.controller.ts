@@ -9,7 +9,10 @@ export class AppController {
 
   @Get()
   @ApiOperation({ summary: 'Get API information' })
-  @ApiResponse({ status: 200, description: 'API information retrieved successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'API information retrieved successfully',
+  })
   getHello(): object {
     return this.appService.getApiInfo();
   }

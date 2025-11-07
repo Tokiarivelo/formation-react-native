@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.IO Test Client</title>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .container {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px 0;
+        }
+        input[type="text"] {
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        #messages {
+            margin-top: 20px;
+            border: 1px solid #eee;
+            padding: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .message {
+            padding: 5px;
+            margin: 5px 0;
+            background-color: #f0f0f0;
+            border-radius: 3px;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+        }
+        .status.connected {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status.disconnected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Socket.IO Test Client</h1>
+        
+        <div id="status" class="status disconnected">Disconnected</div>
+        
+        <h3>Connect to Server</h3>
+        <input type="text" id="serverUrl" placeholder="Server URL (e.g., http://localhost:3000)" value="http://localhost:3000">
+        <input type="text" id="token" placeholder="JWT Access Token or Firebase ID Token">
+        <button id="connectBtn" onclick="connect()">Connect</button>
+        <button id="disconnectBtn" onclick="disconnect()" disabled>Disconnect</button>
+        
+        <h3>Send Message</h3>
+        <input type="text" id="messageInput" placeholder="Enter message">
+        <button id="sendBtn" onclick="sendMessage()" disabled>Send Message</button>
+        
+        <h3>Messages</h3>
+        <div id="messages"></div>
+    </div>
+
+    <script>
+        let socket = null;
+
+        function updateStatus(connected, message) {
+            const statusDiv = document.getElementById('status');
+            if (connected) {
+                statusDiv.className = 'status connected';
+                statusDiv.textContent = 'Connected: ' + message;
+            } else {
+                statusDiv.className = 'status disconnected';
+                statusDiv.textContent = 'Disconnected: ' + message;
+            }
+        }
+
+        function addMessage(text, type = 'info') {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+            messageDiv.textContent = `[${new Date().toLocaleTimeString()}] ${text}`;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function connect() {
+            const serverUrl = document.getElementById('serverUrl').value;
+            const token = document.getElementById('token').value;
+
+            if (!serverUrl) {
+                alert('Please enter server URL');
+                return;
+            }
+
+            if (!token) {
+                alert('Please enter a token');
+                return;
+            }
+
+            addMessage('Connecting to ' + serverUrl + '...', 'info');
+
+            socket = io(serverUrl, {
+                auth: {
+                    token: token
+                }
+            });
+
+            socket.on('connect', () => {
+                addMessage('Connected to server!', 'success');
+                updateStatus(true, 'Socket ID: ' + socket.id);
+                document.getElementById('connectBtn').disabled = true;
+                document.getElementById('disconnectBtn').disabled = false;
+                document.getElementById('sendBtn').disabled = false;
+            });
+
+            socket.on('connected', (data) => {
+                addMessage('Server confirmed connection: ' + JSON.stringify(data), 'success');
+            });
+
+            socket.on('disconnect', () => {
+                addMessage('Disconnected from server', 'error');
+                updateStatus(false, 'Not connected');
+                document.getElementById('connectBtn').disabled = false;
+                document.getElementById('disconnectBtn').disabled = true;
+                document.getElementById('sendBtn').disabled = true;
+            });
+
+            socket.on('message', (data) => {
+                addMessage('Received: ' + JSON.stringify(data), 'received');
+            });
+
+            socket.on('connect_error', (error) => {
+                addMessage('Connection error: ' + error.message, 'error');
+                updateStatus(false, error.message);
+            });
+        }
+
+        function disconnect() {
+            if (socket) {
+                socket.disconnect();
+                socket = null;
+            }
+        }
+
+        function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value;
+
+            if (!message) {
+                alert('Please enter a message');
+                return;
+            }
+
+            if (!socket || !socket.connected) {
+                alert('Not connected to server');
+                return;
+            }
+
+            addMessage('Sending: ' + message, 'sent');
+            socket.emit('message', { text: message });
+            messageInput.value = '';
+        }
+
+        // Allow Enter key to send message
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
