@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateProjectDto, UpdateProjectDto } from './dto/project.dto';
 
@@ -10,8 +14,12 @@ export class ProjectsService {
     return this.prisma.project.create({
       data: {
         ...createProjectDto,
-        startDate: createProjectDto.startDate ? new Date(createProjectDto.startDate) : null,
-        endDate: createProjectDto.endDate ? new Date(createProjectDto.endDate) : null,
+        startDate: createProjectDto.startDate
+          ? new Date(createProjectDto.startDate)
+          : null,
+        endDate: createProjectDto.endDate
+          ? new Date(createProjectDto.endDate)
+          : null,
         userId,
       },
       include: {
@@ -119,8 +127,12 @@ export class ProjectsService {
       where: { id },
       data: {
         ...updateProjectDto,
-        startDate: updateProjectDto.startDate ? new Date(updateProjectDto.startDate) : undefined,
-        endDate: updateProjectDto.endDate ? new Date(updateProjectDto.endDate) : undefined,
+        startDate: updateProjectDto.startDate
+          ? new Date(updateProjectDto.startDate)
+          : undefined,
+        endDate: updateProjectDto.endDate
+          ? new Date(updateProjectDto.endDate)
+          : undefined,
       },
       include: {
         user: {

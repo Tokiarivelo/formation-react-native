@@ -47,3 +47,13 @@ export class RefreshTokenDto {
   @IsNotEmpty()
   refreshToken: string;
 }
+
+export class FirebaseAuthDto {
+  @ApiProperty({
+    description: 'Firebase ID token from Google or Apple sign-in',
+    example: 'eyJhbGciOiJSUzI1NiIsImtpZCI6...',
+  })
+  @IsString()
+  @IsNotEmpty()
+  idToken: string;
+}

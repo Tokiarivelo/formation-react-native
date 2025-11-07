@@ -7,6 +7,7 @@ import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
 import { PrismaModule } from '../prisma/prisma.module';
 import { UsersModule } from '../users/users.module';
+import { FirebaseModule } from '../firebase/firebase.module';
 import type { JwtModuleOptions } from '@nestjs/jwt';
 
 @Module({
@@ -15,10 +16,12 @@ import type { JwtModuleOptions } from '@nestjs/jwt';
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService): JwtModuleOptions => {
-        const expiresIn = configService.get<string>('JWT_ACCESS_TOKEN_EXPIRES_IN')!;
+        const expiresIn = configService.get<string>(
+          'JWT_ACCESS_TOKEN_EXPIRES_IN',
+        )!;
         return {
           secret: configService.get<string>('JWT_SECRET')!,
-          signOptions: { 
+          signOptions: {
             expiresIn: expiresIn as any, // JWT library accepts string but types are strict
           },
         };
@@ -27,6 +30,7 @@ import type { JwtModuleOptions } from '@nestjs/jwt';
     }),
     PrismaModule,
     UsersModule,
+    FirebaseModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],

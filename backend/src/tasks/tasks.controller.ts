@@ -1,5 +1,21 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto, UpdateTaskDto } from './dto/task.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -23,9 +39,16 @@ export class TasksController {
 
   @Get()
   @ApiOperation({ summary: 'Get all user tasks' })
-  @ApiQuery({ name: 'projectId', required: false, description: 'Filter by project ID' })
+  @ApiQuery({
+    name: 'projectId',
+    required: false,
+    description: 'Filter by project ID',
+  })
   @ApiResponse({ status: 200, description: 'Tasks retrieved successfully' })
-  async findAll(@CurrentUser() user: any, @Query('projectId') projectId?: string) {
+  async findAll(
+    @CurrentUser() user: any,
+    @Query('projectId') projectId?: string,
+  ) {
     return this.tasksService.findAll(user.id, projectId);
   }
 
@@ -43,7 +66,11 @@ export class TasksController {
   @ApiResponse({ status: 200, description: 'Task updated successfully' })
   @ApiResponse({ status: 404, description: 'Task not found' })
   @ApiResponse({ status: 403, description: 'Access denied' })
-  async update(@Param('id') id: string, @CurrentUser() user: any, @Body() updateTaskDto: UpdateTaskDto) {
+  async update(
+    @Param('id') id: string,
+    @CurrentUser() user: any,
+    @Body() updateTaskDto: UpdateTaskDto,
+  ) {
     return this.tasksService.update(id, user.id, updateTaskDto);
   }
 

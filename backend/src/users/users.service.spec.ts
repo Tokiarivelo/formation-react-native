@@ -79,7 +79,9 @@ describe('UsersService', () => {
     it('should throw NotFoundException if user not found', async () => {
       (prismaService.user.findUnique as jest.Mock).mockResolvedValue(null);
 
-      await expect(service.findById('nonexistent')).rejects.toThrow(NotFoundException);
+      await expect(service.findById('nonexistent')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -89,7 +91,9 @@ describe('UsersService', () => {
       const updateDto = { firstName: 'Jane' };
       const updatedUser = { ...existingUser, ...updateDto };
 
-      (prismaService.user.findUnique as jest.Mock).mockResolvedValue(existingUser);
+      (prismaService.user.findUnique as jest.Mock).mockResolvedValue(
+        existingUser,
+      );
       (prismaService.user.update as jest.Mock).mockResolvedValue(updatedUser);
 
       const result = await service.update('user1', updateDto);
@@ -99,7 +103,9 @@ describe('UsersService', () => {
     it('should throw NotFoundException if user not found', async () => {
       (prismaService.user.findUnique as jest.Mock).mockResolvedValue(null);
 
-      await expect(service.update('nonexistent', {})).rejects.toThrow(NotFoundException);
+      await expect(service.update('nonexistent', {})).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -117,7 +123,9 @@ describe('UsersService', () => {
     it('should throw NotFoundException if user not found', async () => {
       (prismaService.user.findUnique as jest.Mock).mockResolvedValue(null);
 
-      await expect(service.delete('nonexistent')).rejects.toThrow(NotFoundException);
+      await expect(service.delete('nonexistent')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });

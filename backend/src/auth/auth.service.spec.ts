@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { FirebaseService } from '../firebase/firebase.service';
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 
@@ -54,6 +55,12 @@ describe('AuthService', () => {
                   return undefined;
               }
             }),
+          },
+        },
+        {
+          provide: FirebaseService,
+          useValue: {
+            verifyIdToken: jest.fn(),
           },
         },
       ],
@@ -112,9 +119,13 @@ describe('AuthService', () => {
         password: 'password123',
       };
 
-      (prismaService.user.findFirst as jest.Mock).mockResolvedValue({ id: 'existing-user' });
+      (prismaService.user.findFirst as jest.Mock).mockResolvedValue({
+        id: 'existing-user',
+      });
 
-      await expect(service.register(registerDto)).rejects.toThrow(ConflictException);
+      await expect(service.register(registerDto)).rejects.toThrow(
+        ConflictException,
+      );
     });
   });
 
@@ -156,7 +167,9 @@ describe('AuthService', () => {
 
       (prismaService.user.findUnique as jest.Mock).mockResolvedValue(null);
 
-      await expect(service.login(loginDto)).rejects.toThrow(UnauthorizedException);
+      await expect(service.login(loginDto)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 });

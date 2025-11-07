@@ -1,10 +1,15 @@
 import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { LoginDto, RegisterDto, RefreshTokenDto } from './dto/auth.dto';
+import {
+  LoginDto,
+  RegisterDto,
+  RefreshTokenDto,
+  FirebaseAuthDto,
+} from './dto/auth.dto';
 
 @ApiTags('Authentication')
-@Controller('auth')
+@Controller('v1/auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
@@ -41,5 +46,14 @@ export class AuthController {
   async logout(@Body() refreshTokenDto: RefreshTokenDto) {
     await this.authService.logout(refreshTokenDto.refreshToken);
     return { message: 'Logout successful' };
+  }
+
+  @Post('firebase')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Authenticate with Firebase (Google/Apple)' })
+  @ApiResponse({ status: 200, description: 'Authentication successful' })
+  @ApiResponse({ status: 401, description: 'Invalid Firebase token' })
+  async firebaseAuth(@Body() firebaseAuthDto: FirebaseAuthDto) {
+    return this.authService.authenticateWithFirebase(firebaseAuthDto.idToken);
   }
 }
