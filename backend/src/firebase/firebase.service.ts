@@ -1,10 +1,11 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as admin from 'firebase-admin';
 
 @Injectable()
 export class FirebaseService implements OnModuleInit {
   private app: admin.app.App;
+  private readonly logger = new Logger(FirebaseService.name);
 
   constructor(private configService: ConfigService) {}
 
@@ -16,7 +17,7 @@ export class FirebaseService implements OnModuleInit {
       ?.replace(/\\n/g, '\n');
 
     if (!projectId || !clientEmail || !privateKey) {
-      console.warn(
+      this.logger.warn(
         'Firebase credentials not configured. Firebase authentication will not be available.',
       );
       return;

@@ -223,4 +223,10 @@ export class AuthService {
       where: { id: userId, isActive: true },
     });
   }
+
+  async validateUserByFirebaseUid(firebaseUid: string): Promise<User | null> {
+    return this.prisma.user.findUnique({
+      where: { firebaseUid, isActive: true },
+    });
+  }
 }

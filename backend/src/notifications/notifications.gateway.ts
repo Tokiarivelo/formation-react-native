@@ -13,10 +13,19 @@ import { ConfigService } from '@nestjs/config';
 import { FirebaseService } from '../firebase/firebase.service';
 import { AuthService } from '../auth/auth.service';
 import { Logger } from '@nestjs/common';
+import { User } from '@prisma/client';
+
+interface AuthenticatedSocket extends Socket {
+  data: {
+    user?: User;
+  };
+}
 
 @WebSocketGateway({
   cors: {
-    origin: '*',
+    origin: process.env.NODE_ENV === 'production' 
+      ? process.env.ALLOWED_ORIGINS?.split(',') || [] 
+      : '*',
   },
 })
 export class NotificationsGateway
@@ -34,7 +43,7 @@ export class NotificationsGateway
     private authService: AuthService,
   ) {}
 
-  async handleConnection(client: Socket) {
+  async handleConnection(client: AuthenticatedSocket) {
     try {
       const user = await this.authenticateSocket(client);
 
@@ -44,21 +53,16 @@ export class NotificationsGateway
         return;
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       client.data.user = user;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      this.logger.log(`Client connected: ${client.id}, user: ${(user as { email: string }).email}`);
+      this.logger.log(`Client connected: ${client.id}, user: ${user.email}`);
 
       // Join user to their personal room
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      client.join(`user:${(user as { id: string }).id}`);
+      client.join(`user:${user.id}`);
 
       // Notify client of successful connection
       client.emit('connected', { 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        userId: (user as { id: string }).id, 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        email: (user as { email: string }).email 
+        userId: user.id, 
+        email: user.email 
       });
     } catch (error: unknown) {
       this.logger.error(`Connection error: ${(error as Error).message}`);
@@ -66,16 +70,14 @@ export class NotificationsGateway
     }
   }
 
-  handleDisconnect(client: Socket) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+  handleDisconnect(client: AuthenticatedSocket) {
     const user = client.data.user;
     this.logger.log(
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
       `Client disconnected: ${client.id}${user ? `, user: ${user.email}` : ''}`,
     );
   }
 
-  private async authenticateSocket(client: Socket): Promise<unknown> {
+  private async authenticateSocket(client: Socket): Promise<User | null> {
     try {
       // Try to get token from handshake auth or query
       const token =
@@ -105,19 +107,9 @@ export class NotificationsGateway
         try {
           const decodedToken = await this.firebaseService.verifyIdToken(token);
 
-          const user = await this.authService.validateUserById(
+          // Try to find by Firebase UID using the proper method
+          const firebaseUser = await this.authService.validateUserByFirebaseUid(
             decodedToken.uid,
-          );
-          if (user) {
-            return user;
-          }
-
-          // Find by Firebase UID
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const firebaseUser = await (this.authService as any).prisma.user.findUnique(
-            {
-              where: { firebaseUid: decodedToken.uid },
-            },
           );
 
           if (firebaseUser) {
@@ -137,14 +129,11 @@ export class NotificationsGateway
   }
 
   @SubscribeMessage('message')
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  handleMessage(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+  handleMessage(@MessageBody() data: { text?: string }, @ConnectedSocket() client: AuthenticatedSocket) {
     const user = client.data.user;
-    this.logger.log(`Message from ${user?.email as string}: ${JSON.stringify(data)}`);
+    this.logger.log(`Message from ${user?.email || 'unknown'}: ${JSON.stringify(data)}`);
 
     // Echo message back to sender
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     return { event: 'message', data: { ...data, from: user?.email } };
   }
 
