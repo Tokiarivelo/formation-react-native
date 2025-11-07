@@ -186,7 +186,9 @@ export class AuthService {
           });
         } else {
           // Create new user
-          const username = email.split('@')[0] + '_' + uid.substring(0, 6);
+          // Generate username from email + first 6 chars of UID for uniqueness
+          const FIREBASE_UID_SUFFIX_LENGTH = 6;
+          const username = email.split('@')[0] + '_' + uid.substring(0, FIREBASE_UID_SUFFIX_LENGTH);
           user = await this.prisma.user.create({
             data: {
               email,

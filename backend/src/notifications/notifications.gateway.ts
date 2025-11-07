@@ -23,9 +23,21 @@ interface AuthenticatedSocket extends Socket {
 
 @WebSocketGateway({
   cors: {
-    origin: process.env.NODE_ENV === 'production' 
-      ? process.env.ALLOWED_ORIGINS?.split(',') || [] 
-      : '*',
+    origin: (origin, callback) => {
+      // In development, allow all origins
+      if (process.env.NODE_ENV !== 'production') {
+        callback(null, true);
+        return;
+      }
+      
+      // In production, check against allowed origins
+      const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [];
+      if (allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
   },
 })
 export class NotificationsGateway
@@ -77,14 +89,29 @@ export class NotificationsGateway
     );
   }
 
+  private getTokenFromClient(client: Socket): string | null {
+    // Try multiple sources for the token
+    const authToken = client.handshake.auth?.['token'];
+    if (typeof authToken === 'string') {
+      return authToken;
+    }
+
+    const authHeader = client.handshake.headers?.authorization;
+    if (typeof authHeader === 'string' && authHeader.startsWith('Bearer ')) {
+      return authHeader.replace('Bearer ', '');
+    }
+
+    const queryToken = client.handshake.query?.token;
+    if (typeof queryToken === 'string') {
+      return queryToken;
+    }
+
+    return null;
+  }
+
   private async authenticateSocket(client: Socket): Promise<User | null> {
     try {
-      // Try to get token from handshake auth or query
-      const token =
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        client.handshake.auth?.token ||
-        client.handshake.headers?.authorization?.replace('Bearer ', '') ||
-        (client.handshake.query?.token as string);
+      const token = this.getTokenFromClient(client);
 
       if (!token) {
         return null;
