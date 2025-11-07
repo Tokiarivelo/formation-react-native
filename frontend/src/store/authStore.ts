@@ -29,7 +29,7 @@ export const useAuthStore = create<AuthState>()(
         (set) => ({
             //state
             isLoggedIn: false,
-            isLoading: true,
+            isLoading: false,
             userState: null,
             lastUserState: null,
             biometricEnabled: false,
@@ -91,6 +91,7 @@ export const useAuthStore = create<AuthState>()(
             name: 'auth-storage',
             storage: createJSONStorage(() => AsyncStorage),
             partialize: (state) => ({
+                isLoggedIn: state.isLoggedIn,
                 userState: state.userState,
                 biometricEnabled: state.biometricEnabled,
                 lastUserState: state.lastUserState,

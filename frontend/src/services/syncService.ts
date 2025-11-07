@@ -189,17 +189,3 @@ export async function upsertAuthUser(): Promise<void> {
         }
     })
 }
-
-// export function useNetworkStatus() {
-//     const [isConnected, setIsConnected] = useState(true);
-
-//     useEffect(() => {
-//         const unsubscribe = NetInfo.addEventListener(state => {
-//             setIsConnected(state.isConnected ?? false);
-//         });
-
-//         return () => unsubscribe();
-//     }, []);
-
-//     return isConnected;
-// }

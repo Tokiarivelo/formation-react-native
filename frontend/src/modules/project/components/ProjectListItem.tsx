@@ -4,12 +4,17 @@ import Project from '../../../database/models/Project'
 import AppText from '../../../components/ui/AppText'
 import AppTouchableOpacity from '../../../components/ui/AppTouchableOpacity'
 import { useDeleteProject } from '../hooks/useProjects'
+import { withObservables } from '@nozbe/watermelondb/react'
 
 type ProjectListItemProps = {
     project: Project,
     onProjectDetail: () => void,
     onProjectUpdate: () => void,
 }
+
+const enhance = withObservables(["project"], ({ project }) => ({
+    project
+}))
 
 const ProjectListItem = ({ project, onProjectDetail, onProjectUpdate }: ProjectListItemProps) => {
     const { mutate: remove } = useDeleteProject();
@@ -93,4 +98,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default ProjectListItem
+export default enhance(ProjectListItem)

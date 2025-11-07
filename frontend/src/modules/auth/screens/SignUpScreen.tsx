@@ -15,7 +15,7 @@ const SignUpScreen = ({ navigation }: Props) => {
             <AuthForm signUp={true} />
 
             {/* GO TO LOGIN BUTTON */}
-            <AppTouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.signUpButton}>
+            <AppTouchableOpacity onPress={() => navigation.pop()} style={styles.signUpButton}>
                 <AppText>Already have an account? Log in here</AppText>
             </AppTouchableOpacity>
         </AuthView>
