@@ -25,19 +25,61 @@ async function main() {
 
   console.log('✅ Admin user created:', admin);
 
-  // Create a sample project
+  // Create a second test user
+  const testUserPassword = await bcrypt.hash('test123', 10);
+  const testUser = await prisma.user.upsert({
+    where: { email: 'test@example.com' },
+    update: {},
+    create: {
+      email: 'test@example.com',
+      username: 'testuser',
+      password: testUserPassword,
+      firstName: 'Test',
+      lastName: 'User',
+      role: 'USER',
+      isActive: true,
+    },
+  });
+
+  console.log('✅ Test user created:', testUser);
+
+  // Create a workspace
+  const workspace = await prisma.workspace.create({
+    data: {
+      name: 'Sample Workspace',
+      description: 'A sample workspace for team collaboration',
+      ownerId: admin.id,
+      members: {
+        create: [
+          {
+            userId: admin.id,
+            role: 'ADMIN',
+          },
+          {
+            userId: testUser.id,
+            role: 'MEMBER',
+          },
+        ],
+      },
+    },
+  });
+
+  console.log('✅ Sample workspace created:', workspace);
+
+  // Create a sample project in workspace
   const project = await prisma.project.create({
     data: {
       name: 'Sample Project',
       description: 'A sample project for demonstration',
       status: 'ACTIVE',
       userId: admin.id,
+      workspaceId: workspace.id,
     },
   });
 
   console.log('✅ Sample project created:', project);
 
-  // Create sample tasks
+  // Create sample tasks with assignees
   const task1 = await prisma.task.create({
     data: {
       title: 'Setup Database',
@@ -46,6 +88,7 @@ async function main() {
       priority: 'HIGH',
       userId: admin.id,
       projectId: project.id,
+      assigneeId: admin.id,
     },
   });
 
@@ -57,6 +100,7 @@ async function main() {
       priority: 'HIGH',
       userId: admin.id,
       projectId: project.id,
+      assigneeId: testUser.id,
     },
   });
 

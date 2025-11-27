@@ -24,10 +24,13 @@ model User {
   updatedAt   DateTime @updatedAt
 
   // Relations
-  projects     Project[]
-  tasks        Task[]
-  attachments  Attachment[]
-  refreshTokens RefreshToken[]
+  projects           Project[]
+  tasks              Task[]           @relation("TaskCreator")
+  assignedTasks      Task[]           @relation("TaskAssignee")
+  attachments        Attachment[]
+  refreshTokens      RefreshToken[]
+  ownedWorkspaces    Workspace[]
+  workspaceMemberships WorkspaceMember[]
 
   @@map("users")
 }
@@ -56,9 +59,11 @@ model Project {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   userId      String
+  workspaceId String?
 
   // Relations
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace   Workspace?   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   tasks       Task[]
   attachments Attachment[]
 
@@ -76,9 +81,11 @@ model Task {
   updatedAt   DateTime   @updatedAt
   userId      String
   projectId   String
+  assigneeId  String?
 
   // Relations
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User         @relation("TaskCreator", fields: [userId], references: [id], onDelete: Cascade)
+  assignee    User?        @relation("TaskAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
   project     Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
   attachments Attachment[]
 
@@ -130,4 +137,41 @@ enum Priority {
   MEDIUM
   HIGH
   URGENT
+}
+
+model Workspace {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  ownerId     String
+
+  // Relations
+  owner       User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  members     WorkspaceMember[]
+  projects    Project[]
+
+  @@map("workspaces")
+}
+
+model WorkspaceMember {
+  id          String          @id @default(cuid())
+  role        WorkspaceRole   @default(MEMBER)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  userId      String
+  workspaceId String
+
+  // Relations
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, workspaceId])
+  @@map("workspace_members")
+}
+
+enum WorkspaceRole {
+  ADMIN
+  MEMBER
 }
