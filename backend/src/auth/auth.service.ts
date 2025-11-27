@@ -188,7 +188,10 @@ export class AuthService {
           // Create new user
           // Generate username from email + first 6 chars of UID for uniqueness
           const FIREBASE_UID_SUFFIX_LENGTH = 6;
-          const username = email.split('@')[0] + '_' + uid.substring(0, FIREBASE_UID_SUFFIX_LENGTH);
+          const username =
+            email.split('@')[0] +
+            '_' +
+            uid.substring(0, FIREBASE_UID_SUFFIX_LENGTH);
           user = await this.prisma.user.create({
             data: {
               email,

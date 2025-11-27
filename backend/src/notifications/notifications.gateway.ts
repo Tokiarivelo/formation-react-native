@@ -29,7 +29,7 @@ interface AuthenticatedSocket extends Socket {
         callback(null, true);
         return;
       }
-      
+
       // In production, check against allowed origins
       const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [];
       if (allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
@@ -72,9 +72,9 @@ export class NotificationsGateway
       client.join(`user:${user.id}`);
 
       // Notify client of successful connection
-      client.emit('connected', { 
-        userId: user.id, 
-        email: user.email 
+      client.emit('connected', {
+        userId: user.id,
+        email: user.email,
       });
     } catch (error: unknown) {
       this.logger.error(`Connection error: ${(error as Error).message}`);
@@ -144,7 +144,9 @@ export class NotificationsGateway
           }
         } catch (firebaseError: unknown) {
           // Both JWT and Firebase failed
-          this.logger.debug(`Authentication failed: ${(firebaseError as Error).message}`);
+          this.logger.debug(
+            `Authentication failed: ${(firebaseError as Error).message}`,
+          );
         }
       }
 
@@ -156,22 +158,27 @@ export class NotificationsGateway
   }
 
   @SubscribeMessage('message')
-  handleMessage(@MessageBody() data: { text?: string }, @ConnectedSocket() client: AuthenticatedSocket) {
+  handleMessage(
+    @MessageBody() data: { text?: string },
+    @ConnectedSocket() client: AuthenticatedSocket,
+  ) {
     const user = client.data.user;
-    this.logger.log(`Message from ${user?.email || 'unknown'}: ${JSON.stringify(data)}`);
+    this.logger.log(
+      `Message from ${user?.email || 'unknown'}: ${JSON.stringify(data)}`,
+    );
 
     // Echo message back to sender
     return { event: 'message', data: { ...data, from: user?.email } };
   }
 
   // Method to send notification to specific user
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   sendToUser(userId: string, event: string, data: any) {
     this.server.to(`user:${userId}`).emit(event, data);
   }
 
   // Method to broadcast to all connected clients
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   broadcast(event: string, data: any) {
     this.server.emit(event, data);
   }
