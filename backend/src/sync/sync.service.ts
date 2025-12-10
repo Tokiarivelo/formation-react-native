@@ -108,7 +108,11 @@ export class SyncService {
       try {
         await model.delete({ where: { id: recordId } });
       } catch (error) {
-        // Record might not exist, continue
+        // Record might not exist or be referenced elsewhere, log and continue
+        console.warn(
+          `Could not delete ${tableName} record ${recordId}:`,
+          error.message,
+        );
       }
     }
   }
@@ -297,11 +301,7 @@ export class SyncService {
   ): Promise<TableChanges> {
     const members = await this.prisma.workspaceMember.findMany({
       where: {
-        OR: [
-          { userId },
-          { workspace: { ownerId: userId } },
-          { workspace: { members: { some: { userId } } } },
-        ],
+        OR: [{ userId }, { workspace: { ownerId: userId } }],
       },
     });
 
