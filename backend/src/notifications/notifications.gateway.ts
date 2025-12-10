@@ -211,19 +211,19 @@ export class NotificationsGateway
   }
 
   // Method to send notification to specific user
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   sendToUser(userId: string, event: string, data: any) {
     this.server.to(`user:${userId}`).emit(event, data);
   }
 
   // Method to send notification to workspace room
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   sendToWorkspace(workspaceId: string, event: string, data: any) {
     this.server.to(`workspace:${workspaceId}`).emit(event, data);
   }
 
   // Method to broadcast to all connected clients
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   broadcast(event: string, data: any) {
     this.server.emit(event, data);
   }

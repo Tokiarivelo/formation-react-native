@@ -2,7 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { WorkspacesService } from './workspaces.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { NotificationsGateway } from '../notifications/notifications.gateway';
-import { NotFoundException, ForbiddenException, ConflictException } from '@nestjs/common';
+import {
+  NotFoundException,
+  ForbiddenException,
+  ConflictException,
+} from '@nestjs/common';
 import { WorkspaceRole } from '@prisma/client';
 
 describe('WorkspacesService', () => {
@@ -95,7 +99,8 @@ describe('WorkspacesService', () => {
 
     service = module.get<WorkspacesService>(WorkspacesService);
     prismaService = module.get<PrismaService>(PrismaService);
-    notificationsGateway = module.get<NotificationsGateway>(NotificationsGateway);
+    notificationsGateway =
+      module.get<NotificationsGateway>(NotificationsGateway);
 
     // Reset mocks
     jest.clearAllMocks();

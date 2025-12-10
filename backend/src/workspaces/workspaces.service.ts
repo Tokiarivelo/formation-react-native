@@ -163,7 +163,9 @@ export class WorkspacesService {
       workspace.ownerId === userId || member?.role === WorkspaceRole.ADMIN;
 
     if (!isAdmin) {
-      throw new ForbiddenException('Only owners and admins can update workspace');
+      throw new ForbiddenException(
+        'Only owners and admins can update workspace',
+      );
     }
 
     const updatedWorkspace = await this.prisma.workspace.update({
@@ -326,7 +328,11 @@ export class WorkspacesService {
     return results;
   }
 
-  async removeMember(workspaceId: string, userId: string, memberUserId: string) {
+  async removeMember(
+    workspaceId: string,
+    userId: string,
+    memberUserId: string,
+  ) {
     const workspace = await this.prisma.workspace.findUnique({
       where: { id: workspaceId },
       include: {
@@ -345,9 +351,7 @@ export class WorkspacesService {
     const isSelf = userId === memberUserId;
 
     if (!isAdmin && !isSelf) {
-      throw new ForbiddenException(
-        'Only owners and admins can remove members',
-      );
+      throw new ForbiddenException('Only owners and admins can remove members');
     }
 
     // Cannot remove the owner
@@ -374,14 +378,10 @@ export class WorkspacesService {
     });
 
     // Notify the removed member
-    this.notificationsGateway.sendToUser(
-      memberUserId,
-      'workspace:removed',
-      {
-        workspaceId,
-        workspaceName: workspace.name,
-      },
-    );
+    this.notificationsGateway.sendToUser(memberUserId, 'workspace:removed', {
+      workspaceId,
+      workspaceName: workspace.name,
+    });
 
     return { message: 'Member removed successfully' };
   }
