@@ -12,6 +12,7 @@ import { TasksModule } from './tasks/tasks.module';
 import { AttachmentsModule } from './attachments/attachments.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { WorkspacesModule } from './workspaces/workspaces.module';
+import { SyncModule } from './sync/sync.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { WorkspacesModule } from './workspaces/workspaces.module';
     AttachmentsModule,
     NotificationsModule,
     WorkspacesModule,
+    SyncModule,
   ],
   controllers: [AppController],
   providers: [AppService],
