@@ -51,12 +51,7 @@ export class SyncService {
       await this.prisma.$transaction(async (tx) => {
         // Process each table
         for (const [tableName, tableChanges] of Object.entries(changes)) {
-          await this.applyTableChanges(
-            tx,
-            userId,
-            tableName,
-            tableChanges as TableChanges,
-          );
+          await this.applyTableChanges(tx, userId, tableName, tableChanges);
         }
       });
 
@@ -64,9 +59,7 @@ export class SyncService {
         success: true,
       };
     } catch (error) {
-      throw new BadRequestException(
-        `Failed to push changes: ${error.message}`,
-      );
+      throw new BadRequestException(`Failed to push changes: ${error.message}`);
     }
   }
 
@@ -180,8 +173,8 @@ export class SyncService {
       where: { id: userId },
     });
 
-    const created = [];
-    const updated = [];
+    const created: any[] = [];
+    const updated: any[] = [];
 
     if (user) {
       if (user.createdAt > lastSyncDate) {

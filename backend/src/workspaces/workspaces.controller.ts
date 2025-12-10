@@ -45,7 +45,10 @@ export class WorkspacesController {
 
   @Get()
   @ApiOperation({ summary: 'Get all workspaces for the current user' })
-  @ApiResponse({ status: 200, description: 'Workspaces retrieved successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Workspaces retrieved successfully',
+  })
   async findAll(@CurrentUser() user: any) {
     return this.workspacesService.findAll(user.id);
   }
@@ -115,7 +118,11 @@ export class WorkspacesController {
     @CurrentUser() user: any,
     @Body() addMembersDto: AddMembersDto,
   ) {
-    return this.workspacesService.addMembers(id, user.id, addMembersDto.members);
+    return this.workspacesService.addMembers(
+      id,
+      user.id,
+      addMembersDto.members,
+    );
   }
 
   @Put(':id/members/:memberId/role')
@@ -178,7 +185,10 @@ export class WorkspacesController {
   @ApiOperation({ summary: 'Assign a task to a workspace member' })
   @ApiResponse({ status: 200, description: 'Task assigned successfully' })
   @ApiResponse({ status: 404, description: 'Workspace or task not found' })
-  @ApiResponse({ status: 403, description: 'Access denied or invalid assignee' })
+  @ApiResponse({
+    status: 403,
+    description: 'Access denied or invalid assignee',
+  })
   async assignTask(
     @Param('id') id: string,
     @Param('taskId') taskId: string,

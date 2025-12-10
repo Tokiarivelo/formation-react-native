@@ -1,5 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsObject, IsArray, IsString } from 'class-validator';
+import {
+  IsNumber,
+  IsOptional,
+  IsObject,
+} from 'class-validator';
 
 // Raw record type for WatermelonDB
 export interface RawRecord {
@@ -21,7 +25,8 @@ export interface Changes {
 
 export class PullRequestDto {
   @ApiProperty({
-    description: 'Timestamp of last pull (in milliseconds). Use 0 for initial sync.',
+    description:
+      'Timestamp of last pull (in milliseconds). Use 0 for initial sync.',
     example: 0,
   })
   @IsNumber()
